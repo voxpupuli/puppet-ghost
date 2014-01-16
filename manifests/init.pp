@@ -78,7 +78,7 @@ class ghost(
         }
       }
       default: {
-        fail("${operatingsystem} is not supported, please fork and fix (or make an issue).")
+        fail("${operatingsystem} is not yet supported, please fork and fix (or make an issue).")
       }
     }
   }
