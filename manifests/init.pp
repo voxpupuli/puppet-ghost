@@ -81,19 +81,25 @@ class ghost(
   wget::fetch { 'ghost':
     source      => $ghost::source,
     destination => $ghost::archive,
-    before      => Exec['unzip_ghost'],
+    notify      => Exec['unzip_ghost'],
   }
 
-  if ! defined( Package['unzip'] ) {
-    package { 'unzip':
-      ensure => present,
-    }
-  }
+  ensure_resource('package', 'unzip', {'ensure' => 'present'})
 
   exec { 'unzip_ghost':
-    command => "/usr/bin/unzip -uo ${ghost::archive} -d ${ghost::home}",
-    user    => $ghost::user,
-    require => [ Package['unzip'], File[$ghost::home] ],
+    command     => "/usr/bin/unzip -uo ${ghost::archive} -d ${ghost::home}",
+    user        => $ghost::user,
+    require     => [ Package['unzip'], File[$ghost::home] ],
+    refreshonly => true,
+  }
+
+  exec { 'npm_install_ghost':
+    command     => "/usr/bin/npm install --production",
+    cwd         => $ghost::home,
+    user        => 'root',
+    require     => Package['nodejs'],
+    subscribe   => Exec['unzip_ghost'],
+    refreshonly => true,
   }
 
   if $ghost::manage_config {
@@ -106,19 +112,9 @@ class ghost(
     }
   }
 
-  exec { 'npm_install_ghost':
-    command => "/usr/bin/npm install --production",
-    cwd     => $ghost::home,
-    user    => 'root',
-    require => [ Exec['unzip_ghost'], Package['nodejs'] ],
-  }
-
   if $ghost::manage_supervisor {
-    if ! defined( Package['supervisor'] ) {
-      package { 'supervisor':
-        ensure => present,
-      }
-    }
+
+    ensure_resource('package', 'supervisor', {'ensure' => 'present'})
 
     file { $ghost::supervisor_conf:
       ensure  => present,
