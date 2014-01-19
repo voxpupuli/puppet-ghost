@@ -1,41 +1,19 @@
 # == Class: ghost
 #
-# Full description of class ghost here.
-#
-# === Parameters
-#
-# Document parameters here.
-#
-# [*sample_parameter*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
-#
-# === Variables
-#
-# Here you should define a list of variables that this module would require.
-#
-# [*sample_variable*]
-#   Explanation of how this variable affects the funtion of this class and if
-#   it has a default. e.g. "The parameter enc_ntp_servers must be set by the
-#   External Node Classifier as a comma separated list of hostnames." (Note,
-#   global variables should be avoided in favor of class parameters as
-#   of Puppet 2.6.)
+# This class installs the Ghost Blogging Platform.
 #
 # === Examples
 #
 #  class { ghost:
-#    servers => [ 'pool.ntp.org', 'ntp.local.company.com' ],
+#    $production_url = 'http://my-ghost-blog.com'
 #  }
-#
-# === Authors
-#
-# Author Name <author@domain.com>
 #
 # === Copyright
 #
-# Copyright 2014 Your name here, unless otherwise noted.
+# Copyright 2014 Andrew Schwartzmeyer
 #
-# TODO
+# === TODO
+#
 # - add database setup to template
 # - add mail setup to template
 # - support other operating systems
@@ -44,7 +22,7 @@
 class ghost(
   $user             = 'ghost',
   $group            = 'ghost',
-  $archive          = '/tmp/ghost.zip',
+  $archive          = '/opt/ghost.zip',
   $source           = 'https://ghost.org/zip/ghost-latest.zip',
   $home             = '/opt/ghost',
   $manage_nodejs    = true, # Install PPA and package
@@ -103,19 +81,25 @@ class ghost(
   wget::fetch { 'ghost':
     source      => $ghost::source,
     destination => $ghost::archive,
-    before      => Exec['unzip_ghost'],
+    notify      => Exec['unzip_ghost'],
   }
 
-  if ! defined( Package['unzip'] ) {
-    package { 'unzip':
-      ensure => present,
-    }
-  }
+  ensure_resource('package', 'unzip', {'ensure' => 'present'})
 
   exec { 'unzip_ghost':
-    command => "/usr/bin/unzip -uo ${ghost::archive} -d ${ghost::home}",
-    user    => $ghost::user,
-    require => [ Package['unzip'], File[$ghost::home] ],
+    command     => "/usr/bin/unzip -uo ${ghost::archive} -d ${ghost::home}",
+    user        => $ghost::user,
+    require     => [ Package['unzip'], File[$ghost::home] ],
+    refreshonly => true,
+  }
+
+  exec { 'npm_install_ghost':
+    command     => "/usr/bin/npm install --production",
+    cwd         => $ghost::home,
+    user        => 'root',
+    require     => Package['nodejs'],
+    subscribe   => Exec['unzip_ghost'],
+    refreshonly => true,
   }
 
   if $ghost::manage_config {
@@ -128,19 +112,9 @@ class ghost(
     }
   }
 
-  exec { 'npm_install_ghost':
-    command => "/usr/bin/npm install --production",
-    cwd     => $ghost::home,
-    user    => 'root',
-    require => [ Exec['unzip_ghost'], Package['nodejs'] ],
-  }
-
   if $ghost::manage_supervisor {
-    if ! defined( Package['supervisor'] ) {
-      package { 'supervisor':
-        ensure => present,
-      }
-    }
+
+    ensure_resource('package', 'supervisor', {'ensure' => 'present'})
 
     file { $ghost::supervisor_conf:
       ensure  => present,
