@@ -1,5 +1,5 @@
 name    'andschwa-ghost'
-version '0.0.2'
+version '0.0.3'
 source 'git://github.com/andschwa/puppet-ghost.git'
 author 'Andrew Schwartzmeyer'
 license 'MIT License'
