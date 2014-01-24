@@ -112,7 +112,7 @@ class ghost(
     }
   }
 
-  if $ghost::manage_supervisor {
+  if $ghost::use_supervisor {
 
     ensure_resource('package', 'supervisor', {'ensure' => 'present'})
 
