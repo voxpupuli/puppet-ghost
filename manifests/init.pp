@@ -52,7 +52,8 @@ class ghost(
           before => Package['nodejs'],
         }
         package { 'nodejs':
-          ensure => latest,
+          ensure => present,
+          before => Exec['npm_install_ghost']
         }
       }
       default: {
@@ -66,10 +67,10 @@ class ghost(
   }
 
   user { $ghost::user:
-    ensure     => present,
-    gid        => $ghost::group,
-    home       => $ghost::home,
-    require    => Group[$ghost::group],
+    ensure  => present,
+    gid     => $ghost::group,
+    home    => $ghost::home,
+    require => Group[$ghost::group],
   }
 
   file { $ghost::home:
@@ -81,6 +82,7 @@ class ghost(
   wget::fetch { 'ghost':
     source      => $ghost::source,
     destination => $ghost::archive,
+    user        => $ghost::user,
     notify      => Exec['unzip_ghost'],
   }
 
@@ -97,7 +99,6 @@ class ghost(
     command     => "/usr/bin/npm install --production",
     cwd         => $ghost::home,
     user        => 'root',
-    require     => Package['nodejs'],
     subscribe   => Exec['unzip_ghost'],
     refreshonly => true,
   }
@@ -109,6 +110,7 @@ class ghost(
       group   => $ghost::group,
       content => template('ghost/config.js.erb'),
       require => Exec['unzip_ghost'],
+      notify  => Exec['restart_ghost'],
     }
   }
 
@@ -131,8 +133,8 @@ class ghost(
       subscribe => File[$ghost::supervisor_conf],
     }
 
-    exec { 'start_ghost':
-      command => '/usr/bin/supervisorctl start ghost',
+    exec { 'restart_ghost':
+      command => '/usr/bin/supervisorctl restart ghost',
       require => [ Exec['npm_install_ghost'],
                    Service['supervisor'] ],
     }
