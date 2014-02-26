@@ -48,13 +48,16 @@ class ghost(
   if $ghost::manage_nodejs {
     case $operatingsystem {
       'Ubuntu': {
-        apt::ppa { 'ppa:chris-lea/node.js':
-          before => Package['nodejs'],
-        }
-        package { 'nodejs':
-          ensure => present,
-          before => Exec['npm_install_ghost']
-        }
+        ensure_resource(
+          'apt::ppa',
+          'ppa:chris-lea/node.js',
+          { 'before' => 'Package[nodejs]' }
+        )
+        ensure_resource(
+          'package',
+          'nodejs',
+          { 'before' => 'Exec[npm_install_ghost]' }
+        )
       }
       default: {
         fail("${operatingsystem} is not yet supported, please fork and fix (or make an issue).")
@@ -86,7 +89,7 @@ class ghost(
     notify      => Exec['unzip_ghost'],
   }
 
-  ensure_resource('package', 'unzip', {'ensure' => 'present'})
+  ensure_packages(['unzip'])
 
   exec { 'unzip_ghost':
     command     => "/usr/bin/unzip -uo ${ghost::archive} -d ${ghost::home}",
@@ -116,7 +119,7 @@ class ghost(
 
   if $ghost::use_supervisor {
 
-    ensure_resource('package', 'supervisor', {'ensure' => 'present'})
+    ensure_packages(['supervisor'])
 
     file { $ghost::supervisor_conf:
       ensure  => present,
