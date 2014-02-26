@@ -1,9 +1,9 @@
 [program:ghost]
-command = node <%= scope['ghost::home'] %>/index.js
-directory = <%= scope['ghost::home'] %>
-user = <%= scope['ghost::user'] %>
-autostart = <%= scope['ghost::autostart'] %>
-autorestart = <%= scope['ghost::autorestart'] %>
-stdout_logfile = <%= scope['ghost::stdout_logfile'] %>
-stderr_logfile = <%= scope['ghost::stderr_logfile'] %>
-environment = NODE_ENV="<%= scope['ghost::environment'] %>"
+command		= node <%= scope['ghost::home'] %>/index.js
+directory	= <%= scope['ghost::home'] %>
+user		= <%= scope['ghost::user'] %>
+autostart	= <%= scope['ghost::autostart'] %>
+autorestart	= <%= scope['ghost::autorestart'] %>
+stdout_logfile	= <%= scope['ghost::stdout_logfile'] %>
+stderr_logfile	= <%= scope['ghost::stderr_logfile'] %>
+environment	= NODE_ENV="<%= scope['ghost::environment'] %>"
