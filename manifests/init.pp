@@ -57,7 +57,7 @@ class ghost(
   include ghost::setup
 
   if $manage_nodejs {
-    require ghost::node_js
+    require ghost::nodejs
   }
 
   create_resources('ghost::blog', $blogs, $blog_defaults)

@@ -1,4 +1,10 @@
-class ghost::node_js {
+class ghost::nodejs {
+
+  # Reset file defaults for PPA
+  File {
+    owner => 'root',
+    group => 'root'
+  }
 
   case $operatingsystem {
     'Ubuntu': {
