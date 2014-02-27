@@ -17,7 +17,6 @@ define ghost::blog(
   $development_url  = 'http://my-ghost-blog.com',
   $development_host = '127.0.0.1',
   $development_port = 2368,
-
   ) {
 
   include ghost

@@ -33,14 +33,14 @@
 # - use puppetlabs/nodejs (needs to mature)
 
 class ghost(
-  $user             = 'ghost',
-  $group            = 'ghost',
-  $home             = '/opt/ghost',
-  $archive          = "${home}/ghost.zip",
-  $source           = 'https://ghost.org/zip/ghost-latest.zip',
-  $manage_nodejs    = true, # Install PPA and package
-  $blogs            = {},   # Hash of blog resources to create
-  $blog_defaults    = {},   # Hash of defaults to apply to blog resources
+  $user          = 'ghost',
+  $group         = 'ghost',
+  $home          = '/opt/ghost',
+  $archive       = "${home}/ghost.zip",
+  $source        = 'https://ghost.org/zip/ghost-latest.zip',
+  $manage_nodejs = true, # Install PPA and package
+  $blogs         = {},   # Hash of blog resources to create
+  $blog_defaults = {},   # Hash of defaults to apply to blog resources
   ) {
 
   # resource defaults
