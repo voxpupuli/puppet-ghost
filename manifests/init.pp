@@ -36,7 +36,7 @@ class ghost(
   $user          = 'ghost',
   $group         = 'ghost',
   $home          = '/opt/ghost',
-  $archive       = "${home}/ghost.zip",
+  $archive       = '/opt/ghost.zip',
   $source        = 'https://ghost.org/zip/ghost-latest.zip',
   $manage_nodejs = true, # Install PPA and package
   $blogs         = {},   # Hash of blog resources to create
