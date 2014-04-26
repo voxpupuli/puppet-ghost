@@ -41,8 +41,8 @@ group, and finally starts ghost.
 * Services
     * `supervisor`
 * Files
-    * `/opt/ghost`
-    * `/etc/supervisor/conf.d/ghost.conf`
+    * `/opt/ghost/`
+    * `/etc/supervisor/conf.d/ghost_<blog>.conf`
 * User
     * `ghost`
 * Group
@@ -72,7 +72,7 @@ parameters:
 $user          = 'ghost',
 $group         = 'ghost',
 $home          = '/opt/ghost',
-$archive       = "${home}/ghost.zip",
+$archive       = "/opt/ghost.zip",
 $source        = 'https://ghost.org/zip/ghost-latest.zip',
 $manage_nodejs = true, # Install PPA and package
 $blogs         = {},   # Hash of blog resources to create
