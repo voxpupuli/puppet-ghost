@@ -103,6 +103,11 @@ $production_port  = 2368,
 $development_url  = 'http://my-ghost-blog.com',
 $development_host = '127.0.0.1',
 $development_port = 2368,
+
+ # Mail settings (see http://docs.ghost.org/mail/)
+$transport        = undef, # Mail transport
+$fromaddress      = undef, # Mail from address
+$mail_options     = {},    # Hash for mail options
 ```
 
 These resources can be declared using Hiera by providing a hash to
@@ -113,7 +118,12 @@ like this:
 ghost::blogs:
   blog_one:
     production_url: http://my-first-ghost-blog.com
-    production_port: 2368
+    transport: SMTP
+	fromaddress: myemail@address.com
+	mail_options:
+	  auth:
+        user: youremail@gmail.com
+        pass: yourpassword
   blog_two:
     production_url: http://my-second-ghost-blog.com
     production_port: 2369
