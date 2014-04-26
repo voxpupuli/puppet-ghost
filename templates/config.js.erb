@@ -46,7 +46,27 @@ config = {
     // Configure your URL and mail settings here
     production: {
         url: '<%= scope['production_url'] %>',
-        mail: {},
+
+        mail: {
+	    <% if defined? scope['transport'] -%>
+	    transport: '<%= scope['transport'] %>',
+	    <% end -%>
+	    <% if defined? scope['fromaddress'] -%>
+	    fromaddress: '<%= scope['fromaddress'] %>',
+	    <% end -%>
+            options: {
+	    <% scope['mail_options'].each do |key, value| -%>
+                <% if value.is_a?(Hash) -%><%= key %>: {
+                    <% value.each do |subkey, subvalue| -%><%= subkey %>: '<%= subvalue %>',
+                    <% end -%>
+		}
+	        <% else -%>
+	        <%= key %>: '<%= value %>',
+		<% end -%>
+	    <% end -%>
+	    }
+        },
+
         database: {
             client: 'sqlite3',
             connection: {

@@ -20,7 +20,7 @@
 #     }
 #   }
 # }
-# 
+#
 # === Copyright
 #
 # Copyright 2014 Andrew Schwartzmeyer
@@ -28,7 +28,6 @@
 # === TODO
 #
 # - add database setup to template
-# - add mail setup to template
 # - support other operating systems
 # - use puppetlabs/nodejs (needs to mature)
 
