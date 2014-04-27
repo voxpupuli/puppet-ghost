@@ -43,6 +43,16 @@ class ghost(
   $blog_defaults = {},   # Hash of defaults to apply to blog resources
   ) {
 
+  validate_string($user)
+  validate_string($group)
+  validate_string($home)
+  validate_string($shell)
+  validate_string($archive)
+  validate_string($source)
+  validate_bool($manage_nodejs)
+  validate_hash($blogs)
+  validate_hash($blog_defaults)
+
   # resource defaults
   Exec {
     path => '/usr/bin:/bin:/usr/sbin:/sbin',

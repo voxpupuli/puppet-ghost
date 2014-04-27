@@ -26,6 +26,30 @@ define ghost::blog(
 
   include ghost
 
+  validate_string($blog)
+  validate_bool($use_supervisor)
+  validate_bool($autostart)
+  validate_bool($autorestart)
+  validate_string($environment)
+  validate_bool($manage_config)
+  validate_string($production_url)
+  validate_string($production_host)
+  if !is_integer($production_port) {
+    fail('$production_port must be an integer')
+  }
+  validate_string($development_url)
+  validate_string($development_host)
+  if !is_integer($development_port) {
+    fail('$development_port must be an integer')
+  }
+  if ($transport != undef) {
+    validate_string($transport)
+  }
+  if ($fromaddress != undef) {
+    validate_string($fromaddress)
+  }
+  validate_hash($mail_options)
+
   $home = "${ghost::home}/${blog}"
 
   file { $home:
