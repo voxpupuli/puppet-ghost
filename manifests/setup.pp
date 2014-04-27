@@ -9,6 +9,7 @@ class ghost::setup {
     gid        => $ghost::group,
     home       => $ghost::home,
     managehome => true,
+    shell      => $ghost::shell,
     require    => Group[$ghost::group],
   }
 

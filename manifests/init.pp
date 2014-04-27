@@ -35,6 +35,7 @@ class ghost(
   $user          = 'ghost',
   $group         = 'ghost',
   $home          = '/opt/ghost',
+  $shell         = '/bin/bash',
   $archive       = '/opt/ghost.zip',
   $source        = 'https://ghost.org/zip/ghost-latest.zip',
   $manage_nodejs = true, # Install PPA and package
