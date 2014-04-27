@@ -111,10 +111,11 @@ define ghost::blog(
     }
 
     exec { "restart_ghost_${blog}":
-      command   => "supervisorctl restart ghost_${blog}",
-      user      => 'root',
-      require   => Exec["npm_install_ghost_${blog}"],
-      subscribe => File["ghost_config_${blog}"]
+      command     => "supervisorctl restart ghost_${blog}",
+      user        => 'root',
+      require     => Exec["npm_install_ghost_${blog}"],
+      subscribe   => File["ghost_config_${blog}"],
+      refreshonly => true,
     }
   }
 }
