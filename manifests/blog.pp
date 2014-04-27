@@ -3,7 +3,8 @@ define ghost::blog(
   $use_supervisor   = true,         # Use supervisor to manage Ghost
   $autostart        = true,         # Supervisor - Start at boot
   $autorestart      = true,         # Supervisor - Keep running
-  $environment      = 'production', # Supervisor - Ghost config environment to run
+  $environment      = 'production', # Supervisor - Ghost config
+                                    # environment to run
 
   # Parameters below affect Ghost's config through the template
   $manage_config    = true, # Manage Ghost's config.js
@@ -84,7 +85,7 @@ define ghost::blog(
     # Need this file for Exec[restart_ghost] dependency
     file { "ghost_config_${blog}":
       path    => "${home}/restart.lock",
-      content => "Puppet: delete this file to force a restart via Puppet"
+      content => 'Puppet: delete this file to force a restart via Puppet'
     }
   }
 
@@ -92,14 +93,15 @@ define ghost::blog(
 
     require ghost::supervisor
 
-    case $operatingsystem {
+    case $::operatingsystem {
       'Ubuntu': {
         $stdout_logfile   = "/var/log/supervisor/ghost_${blog}.log"
         $stderr_logfile   = "/var/log/supervisor/ghost_${blog}_err.log"
         $supervisor_conf  = "/etc/supervisor/conf.d/ghost_${blog}.conf"
       }
       default: {
-        fail("${operatingsystem} is not yet supported, please fork and fix (or make an issue).")
+        fail("${::operatingsystem} is not yet supported, please fork and
+        fix (or make an issue).")
       }
     }
 
