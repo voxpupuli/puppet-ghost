@@ -99,6 +99,11 @@ define ghost::blog(
         $stderr_logfile   = "/var/log/supervisor/ghost_${blog}_err.log"
         $supervisor_conf  = "/etc/supervisor/conf.d/ghost_${blog}.conf"
       }
+      'RedHat', 'CentOS': {
+        $stdout_logfile   = "/var/log/supervisor/ghost_${blog}.log"
+        $stderr_logfile   = "/var/log/supervisor/ghost_${blog}_err.log"
+        $supervisor_conf  = "/etc/supervisor/conf.d/ghost_${blog}.conf"
+      }
       default: {
         fail("${::operatingsystem} is not yet supported, please fork and
         fix (or make an issue).")

@@ -18,6 +18,12 @@ class ghost::nodejs {
         'nodejs',
       )
     }
+    'RedHat','CentOS': {
+      ensure_resource(
+        'package',
+        'nodejs',
+      )
+    }
     default: {
       fail("${operatingsystem} is not yet supported, please fork and fix (or make an issue).")
     }
