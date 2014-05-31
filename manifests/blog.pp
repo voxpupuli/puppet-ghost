@@ -98,23 +98,40 @@ define ghost::blog(
         $stdout_logfile   = "/var/log/supervisor/ghost_${blog}.log"
         $stderr_logfile   = "/var/log/supervisor/ghost_${blog}_err.log"
         $supervisor_conf  = "/etc/supervisor/conf.d/ghost_${blog}.conf"
+        file { $supervisor_conf:
+          ensure  => present,
+          owner   => 'root',
+          group   => 'root',
+          content => template('ghost/ghost.conf.erb'),
+        }
+
       }
       'RedHat', 'CentOS': {
         $stdout_logfile   = "/var/log/supervisor/ghost_${blog}.log"
         $stderr_logfile   = "/var/log/supervisor/ghost_${blog}_err.log"
-        $supervisor_conf  = "/etc/supervisor/conf.d/ghost_${blog}.conf"
+        $supervisor_conf  = '/etc/supervisord.conf'
+        # default CentOS 6.5 supervisor package is <3.0, meaning it doesn't
+        # support external conf files
+        ensure_resource('concat', $supervisor_conf,)
+        ensure_resource('concat::fragment', 'supervisor_base',
+        {
+          'target'   => $supervisor_conf,
+          'content'  => template('ghost/centos_supervisord_base.conf'),
+          'order'    => '01',
+        }
+        )
+        ensure_resource('concat::fragment', $blog,
+        {
+          'target'  => $supervisor_conf,
+          'content' => template('ghost/ghost.conf.erb'),
+          'order'   => '10'
+        }
+        )
       }
       default: {
         fail("${::operatingsystem} is not yet supported, please fork and
         fix (or make an issue).")
       }
-    }
-
-    file { $supervisor_conf:
-      ensure  => present,
-      owner   => 'root',
-      group   => 'root',
-      content => template('ghost/ghost.conf.erb'),
     }
 
     exec { "restart_ghost_${blog}":
