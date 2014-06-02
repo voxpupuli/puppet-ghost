@@ -55,7 +55,7 @@ class ghost(
 
   # resource defaults
   Exec {
-    path => '/usr/bin:/bin:/usr/sbin:/sbin',
+    path => '/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin',
     user => $user,
   }
 

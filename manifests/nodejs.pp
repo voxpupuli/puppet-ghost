@@ -11,7 +11,7 @@ class ghost::nodejs {
       ensure_resource(
         'apt::ppa',
         'ppa:chris-lea/node.js',
-        { 'before' => 'Package[nodejs]' }
+        { 'before' => '[Package[nodejs], Package[npm]]' }
       )
     }
     default: {}
