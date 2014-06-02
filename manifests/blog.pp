@@ -53,6 +53,7 @@ define ghost::blog(
     command     => "unzip -uo ${ghost::archive} -d ${home}",
     require     => [ Package['unzip'], File[$home] ],
     subscribe   => Wget::Fetch['ghost'],
+    notify      => Exec["npm_install_ghost_${blog}"],
     refreshonly => true,
   }
 
@@ -60,7 +61,7 @@ define ghost::blog(
     command     => 'npm install --production', # Must be --production
     cwd         => $home,
     user        => 'root',
-    subscribe   => Exec["unzip_ghost_${blog}"],
+    require     => Package['npm'],
     refreshonly => true,
   }
 
@@ -75,7 +76,7 @@ define ghost::blog(
     # Need this file for Exec[restart_ghost] dependency
     file { "ghost_config_${blog}":
       path    => "${home}/restart.lock",
-      content => 'Puppet: delete this file to force a restart via Puppet'
+      content => 'Puppet: delete this file to force a restart via Puppet',
     }
   }
 
@@ -86,11 +87,14 @@ define ghost::blog(
     $logfile        = "/var/log/ghost_forever_${blog}.log"
     $stdout_logfile = "/var/log/ghost_${blog}.log"
     $stderr_logfile = "/var/log/ghost_${blog}_err.log"
+    $process        = "${home}/index.js"
 
     exec { "restart_ghost_${blog}":
-      command     => "NODE_ENV=production forever -l ${logfile} -o ${stdout_logfile} -e ${stderr_logfile} restart index.js",
+      command     => "forever restart ${process} || forever -l ${logfile} -o ${stdout_logfile} -e ${stderr_logfile} start ${process}",
+      environment => 'NODE_ENV=production',
       user        => 'root',
-      require     => Exec["npm_install_ghost_${blog}"],
+      require     => Exec['npm_install_forever'],
+      subscribe   => [ Exec["npm_install_ghost_${blog}"], File["ghost_config_${blog}"], ],
       refreshonly => true,
     }
   }
