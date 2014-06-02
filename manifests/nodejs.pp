@@ -14,6 +14,7 @@ class ghost::nodejs {
         { 'before' => 'Package[nodejs]' }
       )
     }
+    default: {}
   }
 
   ensure_packages(['nodejs', 'npm'])

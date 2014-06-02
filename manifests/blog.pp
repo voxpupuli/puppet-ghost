@@ -16,9 +16,9 @@ define ghost::blog(
   $development_port = 2368,
 
   # Mail settings (see http://docs.ghost.org/mail/)
-  $transport        = undef, # Mail transport
-  $fromaddress      = undef, # Mail from address
-  $mail_options     = {},    # Hash for mail options
+  $transport        = '', # Mail transport
+  $fromaddress      = '', # Mail from address
+  $mail_options     = {}, # Hash for mail options
 ) {
 
   include ghost
@@ -37,12 +37,8 @@ define ghost::blog(
   if !is_integer($development_port) {
     fail('$development_port must be an integer')
   }
-  if ($transport != undef) {
-    validate_string($transport)
-  }
-  if ($fromaddress != undef) {
-    validate_string($fromaddress)
-  }
+  validate_string($transport)
+  validate_string($fromaddress)
   validate_hash($mail_options)
 
   $home = "${ghost::home}/${blog}"
