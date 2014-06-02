@@ -33,7 +33,8 @@ group, and finally starts ghost.
 ### What andschwa-ghost affects
 
 * Packages
-    * `nodejs`
+    * `nodejs` (Note that this requires the [EPEL](https://fedoraproject.org/wiki/EPEL) repository on CentOS)
+	* `npm`
 	* `unzip`
 	* `supervisor`
 * PPAs
