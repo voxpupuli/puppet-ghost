@@ -70,6 +70,6 @@ class ghost(
     require ghost::nodejs
   }
 
-  create_resources('ghost::blog', $blogs, $blog_defaults)
+  create_resources('ghost::blog', hiera_hash('ghost::blogs', {}), hiera_hash('ghost::blog_defaults', {}))
 
 }
