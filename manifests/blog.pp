@@ -3,8 +3,7 @@ define ghost::blog(
   $use_supervisor   = true,         # Use supervisor to manage Ghost
   $autostart        = true,         # Supervisor - Start at boot
   $autorestart      = true,         # Supervisor - Keep running
-  $environment      = 'production', # Supervisor - Ghost config
-  # environment to run
+  $environment      = 'production', # Supervisor - Ghost config environment to run in
 
   # Parameters below affect Ghost's config through the template
   $manage_config    = true, # Manage Ghost's config.js
