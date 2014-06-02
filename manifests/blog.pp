@@ -90,7 +90,7 @@ define ghost::blog(
     $process        = "${home}/index.js"
 
     exec { "restart_ghost_${blog}":
-      command     => "forever restart ${process} || forever -l ${logfile} -o ${stdout_logfile} -e ${stderr_logfile} start ${process}",
+      command     => "forever stop ${process} && forever -l ${logfile} -o ${stdout_logfile} -e ${stderr_logfile} start ${process}", # forever returns 0 even on error, so the restart subcommand is not suited to this
       environment => 'NODE_ENV=production',
       user        => 'root',
       require     => Exec['npm_install_forever'],
