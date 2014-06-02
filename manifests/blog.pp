@@ -1,9 +1,6 @@
 define ghost::blog(
-  $blog             = $title,       # Subdirectory and conf name for blog
-  $use_supervisor   = true,         # Use supervisor to manage Ghost
-  $autostart        = true,         # Supervisor - Start at boot
-  $autorestart      = true,         # Supervisor - Keep running
-  $environment      = 'production', # Supervisor - Ghost config environment to run in
+  $blog        = $title,       # Subdirectory and conf name for blog
+  $use_forever = true,         # Use [forever](https://npmjs.org/package/forever) to manage Ghost
 
   # Parameters below affect Ghost's config through the template
   $manage_config    = true, # Manage Ghost's config.js
@@ -27,11 +24,9 @@ define ghost::blog(
   include ghost
 
   validate_string($blog)
-  validate_bool($use_supervisor)
-  validate_bool($autostart)
-  validate_bool($autorestart)
-  validate_string($environment)
+  validate_bool($use_forever)
   validate_bool($manage_config)
+
   validate_string($production_url)
   validate_string($production_host)
   if !is_integer($production_port) {
@@ -88,47 +83,18 @@ define ghost::blog(
     }
   }
 
-  if $use_supervisor {
+  if $use_forever {
 
-    include ghost::supervisor
+    require ghost::forever
 
-    case $::operatingsystem {
-      'Ubuntu': {
-        $stdout_logfile   = "/var/log/supervisor/ghost_${blog}.log"
-        $stderr_logfile   = "/var/log/supervisor/ghost_${blog}_err.log"
-        $supervisor_conf  = "/etc/supervisor/conf.d/ghost_${blog}.conf"
-        file { $supervisor_conf:
-          ensure  => present,
-          owner   => 'root',
-          group   => 'root',
-          content => template('ghost/ghost.conf.erb'),
-        }
-
-      }
-      'RedHat', 'CentOS': {
-        $stdout_logfile   = "/var/log/supervisor/ghost_${blog}.log"
-        $stderr_logfile   = "/var/log/supervisor/ghost_${blog}_err.log"
-        # default CentOS 6.5 supervisor package is <3.0, meaning it doesn't
-        # support external conf files
-        ensure_resource('concat::fragment', $blog,
-        {
-          'target'  => $ghost::supervisor::supervisor_conf,
-          'content' => template('ghost/ghost.conf.erb'),
-          'order'   => '10'
-        }
-        )
-      }
-      default: {
-        fail("${::operatingsystem} is not yet supported, please fork and
-        fix (or make an issue).")
-      }
-    }
+    $logfile        = "/var/log/ghost_forever_${blog}.log"
+    $stdout_logfile = "/var/log/ghost_${blog}.log"
+    $stderr_logfile = "/var/log/ghost_${blog}_err.log"
 
     exec { "restart_ghost_${blog}":
-      command     => "supervisorctl restart ghost_${blog}",
+      command     => "NODE_ENV=production forever -l ${logfile} -o ${stdout_logfile} -e ${stderr_logfile} restart index.js",
       user        => 'root',
       require     => Exec["npm_install_ghost_${blog}"],
-      subscribe   => File["ghost_config_${blog}"],
       refreshonly => true,
     }
   }
