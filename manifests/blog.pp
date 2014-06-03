@@ -3,21 +3,16 @@ define ghost::blog(
   $use_supervisor   = true,         # Use supervisor to manage Ghost
   $autostart        = true,         # Supervisor - Start at boot
   $autorestart      = true,         # Supervisor - Keep running
-  $environment      = 'production', # Supervisor - Ghost config
-                                    # environment to run
+  $home             = "${ghost::home}/${blog}", # Root of Ghost instance
 
   # Parameters below affect Ghost's config through the template
   $manage_config    = true, # Manage Ghost's config.js
 
   # For a working blog, these must be specified and different per instance
-  $production_url   = 'http://my-ghost-blog.com',
-  $production_host  = '127.0.0.1',
-  $production_port  = 2368,
-
-  # These are used when ${environment} is set to 'development'
-  $development_url  = 'http://my-ghost-blog.com',
-  $development_host = '127.0.0.1',
-  $development_port = 2368,
+  $url    = 'http://my-ghost-blog.com',  # Required URL of blog
+  $socket = "${home}/production.socket", # Set to false to use host and port
+  $host   = '127.0.0.1',
+  $port   = 2368,
 
   # Mail settings (see http://docs.ghost.org/mail/)
   $transport        = undef, # Mail transport
@@ -31,17 +26,11 @@ define ghost::blog(
   validate_bool($use_supervisor)
   validate_bool($autostart)
   validate_bool($autorestart)
-  validate_string($environment)
   validate_bool($manage_config)
-  validate_string($production_url)
-  validate_string($production_host)
-  if !is_integer($production_port) {
-    fail('$production_port must be an integer')
-  }
-  validate_string($development_url)
-  validate_string($development_host)
-  if !is_integer($development_port) {
-    fail('$development_port must be an integer')
+  validate_string($url)
+  validate_string($host)
+  if !is_integer($port) {
+    fail('$port must be an integer')
   }
   if ($transport != undef) {
     validate_string($transport)
@@ -50,8 +39,6 @@ define ghost::blog(
     validate_string($fromaddress)
   }
   validate_hash($mail_options)
-
-  $home = "${ghost::home}/${blog}"
 
   file { $home:
     ensure => directory,
