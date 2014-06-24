@@ -4,7 +4,7 @@ define ghost::blog(
   $autostart        = true,         # Supervisor - Start at boot
   $autorestart      = true,         # Supervisor - Keep running
   $environment      = 'production', # Supervisor - Ghost config
-                                    # environment to run
+  # environment to run
 
   # Parameters below affect Ghost's config through the template
   $manage_config    = true, # Manage Ghost's config.js
@@ -23,7 +23,7 @@ define ghost::blog(
   $transport        = undef, # Mail transport
   $fromaddress      = undef, # Mail from address
   $mail_options     = {},    # Hash for mail options
-  ) {
+) {
 
   include ghost
 
@@ -91,25 +91,38 @@ define ghost::blog(
 
   if $use_supervisor {
 
-    require ghost::supervisor
+    include ghost::supervisor
 
     case $::operatingsystem {
       'Ubuntu': {
         $stdout_logfile   = "/var/log/supervisor/ghost_${blog}.log"
         $stderr_logfile   = "/var/log/supervisor/ghost_${blog}_err.log"
         $supervisor_conf  = "/etc/supervisor/conf.d/ghost_${blog}.conf"
+        file { $supervisor_conf:
+          ensure  => present,
+          owner   => 'root',
+          group   => 'root',
+          content => template('ghost/ghost.conf.erb'),
+        }
+
+      }
+      'RedHat', 'CentOS': {
+        $stdout_logfile   = "/var/log/supervisor/ghost_${blog}.log"
+        $stderr_logfile   = "/var/log/supervisor/ghost_${blog}_err.log"
+        # default CentOS 6.5 supervisor package is <3.0, meaning it doesn't
+        # support external conf files
+        ensure_resource('concat::fragment', $blog,
+        {
+          'target'  => $ghost::supervisor::supervisor_conf,
+          'content' => template('ghost/ghost.conf.erb'),
+          'order'   => '10'
+        }
+        )
       }
       default: {
         fail("${::operatingsystem} is not yet supported, please fork and
         fix (or make an issue).")
       }
-    }
-
-    file { $supervisor_conf:
-      ensure  => present,
-      owner   => 'root',
-      group   => 'root',
-      content => template('ghost/ghost.conf.erb'),
     }
 
     exec { "restart_ghost_${blog}":

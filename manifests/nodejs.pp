@@ -6,7 +6,7 @@ class ghost::nodejs {
     group => 'root'
   }
 
-  case $operatingsystem {
+  case $::operatingsystem {
     'Ubuntu': {
       ensure_resource(
         'apt::ppa',
@@ -16,6 +16,16 @@ class ghost::nodejs {
       ensure_resource(
         'package',
         'nodejs',
+      )
+    }
+    'RedHat','CentOS': {
+      ensure_resource(
+        'package',
+        'nodejs',
+      )
+      ensure_resource(
+        'package',
+        'npm',
       )
     }
     default: {
