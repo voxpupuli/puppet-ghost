@@ -6,20 +6,16 @@ class ghost::nodejs {
     group => 'root'
   }
 
-  case $operatingsystem {
+  case $::operatingsystem {
     'Ubuntu': {
       ensure_resource(
         'apt::ppa',
         'ppa:chris-lea/node.js',
-        { 'before' => 'Package[nodejs]' }
-      )
-      ensure_resource(
-        'package',
-        'nodejs',
+        { 'before' => '[Package[nodejs], Package[npm]]' }
       )
     }
-    default: {
-      fail("${operatingsystem} is not yet supported, please fork and fix (or make an issue).")
-    }
+    default: {}
   }
+
+  ensure_packages(['nodejs', 'npm'])
 }

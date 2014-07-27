@@ -1,9 +1,7 @@
 define ghost::blog(
-  $blog             = $title,       # Subdirectory and conf name for blog
-  $use_supervisor   = true,         # Use supervisor to manage Ghost
-  $autostart        = true,         # Supervisor - Start at boot
-  $autorestart      = true,         # Supervisor - Keep running
-  $home             = "${ghost::home}/${blog}", # Root of Ghost instance
+  $blog        = $title,       # Subdirectory and conf name for blog
+  $use_forever = true,         # Use [forever](https://npmjs.org/package/forever) to manage Ghost
+  $home        = "${ghost::home}/${blog}", # Root of Ghost instance
 
   # Parameters below affect Ghost's config through the template
   $manage_config    = true, # Manage Ghost's config.js
@@ -15,29 +13,23 @@ define ghost::blog(
   $port   = 2368,
 
   # Mail settings (see http://docs.ghost.org/mail/)
-  $transport        = undef, # Mail transport
-  $fromaddress      = undef, # Mail from address
-  $mail_options     = {},    # Hash for mail options
+  $transport        = '', # Mail transport
+  $fromaddress      = '', # Mail from address
+  $mail_options     = {}, # Hash for mail options
   ) {
 
   include ghost
 
   validate_string($blog)
-  validate_bool($use_supervisor)
-  validate_bool($autostart)
-  validate_bool($autorestart)
+  validate_bool($use_forever)
+  validate_absolute_path($home)
   validate_bool($manage_config)
   validate_string($url)
-  validate_string($host)
-  if !is_integer($port) {
-    fail('$port must be an integer')
-  }
-  if ($transport != undef) {
-    validate_string($transport)
-  }
-  if ($fromaddress != undef) {
-    validate_string($fromaddress)
-  }
+  validate_absolute_path($socket)
+  validate_re($host, '\d+\.\d+\.\d+.\d+', )
+  validate_re($port, '\d+')
+  validate_string($transport)
+  validate_string($fromaddress)
   validate_hash($mail_options)
 
   file { $home:
@@ -50,6 +42,7 @@ define ghost::blog(
     command     => "unzip -uo ${ghost::archive} -d ${home}",
     require     => [ Package['unzip'], File[$home] ],
     subscribe   => Wget::Fetch['ghost'],
+    notify      => Exec["npm_install_ghost_${blog}"],
     refreshonly => true,
   }
 
@@ -57,7 +50,7 @@ define ghost::blog(
     command     => 'npm install --production', # Must be --production
     cwd         => $home,
     user        => 'root',
-    subscribe   => Exec["unzip_ghost_${blog}"],
+    require     => Package['npm'],
     refreshonly => true,
   }
 
@@ -72,38 +65,25 @@ define ghost::blog(
     # Need this file for Exec[restart_ghost] dependency
     file { "ghost_config_${blog}":
       path    => "${home}/restart.lock",
-      content => 'Puppet: delete this file to force a restart via Puppet'
+      content => 'Puppet: delete this file to force a restart via Puppet',
     }
   }
 
-  if $use_supervisor {
+  if $use_forever {
 
-    require ghost::supervisor
+    require ghost::forever
 
-    case $::operatingsystem {
-      'Ubuntu': {
-        $stdout_logfile   = "/var/log/supervisor/ghost_${blog}.log"
-        $stderr_logfile   = "/var/log/supervisor/ghost_${blog}_err.log"
-        $supervisor_conf  = "/etc/supervisor/conf.d/ghost_${blog}.conf"
-      }
-      default: {
-        fail("${::operatingsystem} is not yet supported, please fork and
-        fix (or make an issue).")
-      }
-    }
-
-    file { $supervisor_conf:
-      ensure  => present,
-      owner   => 'root',
-      group   => 'root',
-      content => template('ghost/ghost.conf.erb'),
-    }
+    $logfile        = "/var/log/ghost_forever_${blog}.log"
+    $stdout_logfile = "/var/log/ghost_${blog}.log"
+    $stderr_logfile = "/var/log/ghost_${blog}_err.log"
+    $process        = "${home}/index.js"
 
     exec { "restart_ghost_${blog}":
-      command     => "supervisorctl restart ghost_${blog}",
+      command     => "forever stop ${process} && forever -l ${logfile} -o ${stdout_logfile} -e ${stderr_logfile} start ${process}", # forever returns 0 even on error, so the restart subcommand is not suited to this
+      environment => 'NODE_ENV=production',
       user        => 'root',
-      require     => Exec["npm_install_ghost_${blog}"],
-      subscribe   => File["ghost_config_${blog}"],
+      require     => Exec['npm_install_forever'],
+      subscribe   => [ Exec["npm_install_ghost_${blog}"], File["ghost_config_${blog}"], ],
       refreshonly => true,
     }
   }
