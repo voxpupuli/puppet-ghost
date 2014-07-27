@@ -44,42 +44,33 @@ define ghost::blog(
 
   include ghost
 
-  # resource defaults
   Exec {
-    path => '/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin',
-    user => $ghost::user,
-  }
-
-  File {
-    owner => $ghost::user,
-    group => $ghost::group,
+    cwd     => $home,
+    require => File[$home],
   }
 
   file { $home:
-    ensure => directory,
+    ensure  => directory,
   }
 
   ensure_packages(['unzip', 'curl'])
 
   exec { "curl_ghost_${blog}":
     command => "curl -L ${source} -o ghost.zip",
-    cwd     => $home,
     onlyif  => 'test ! -f ghost.zip',
     require => Package['curl'],
   }
 
   exec { "unzip_ghost_${blog}":
     command     => 'unzip -uo ghost.zip',
-    cwd         => $home,
-    require     => [ Package['unzip'], File[$home] ],
+    require     => Package['unzip'],
     subscribe   => Exec["curl_ghost_${blog}"],
     refreshonly => true,
   }
 
   exec { "npm_install_ghost_${blog}":
     command     => 'npm install --production', # Must be --production
-    cwd         => $home,
-    require     => Class['nodejs'],
+    require     => Exec['npm_config_set_registry'],
     subscribe   => Exec["unzip_ghost_${blog}"],
     refreshonly => true,
   }
@@ -94,27 +85,23 @@ define ghost::blog(
   else {
     # Need this file for Exec[restart_ghost_${blog}] dependency
     file { "ghost_config_${blog}":
-      path    => "${home}/restart.lock",
+      path    => "${home}/puppet.lock",
       content => 'Puppet: delete this file to force a restart via Puppet',
     }
   }
 
   if $use_forever {
+
     require ghost::forever
 
     exec { "restart_ghost_${blog}":
-      command     => "forever stop index.js ; forever -l ${forever_logfile} -o ${stdout_logfile} -e ${stderr_logfile} start index.js", # forever returns 0 even on error, so the restart subcommand is not suited to this
+      command     => "forever -l ${forever_logfile} -o ${stdout_logfile} -e ${stderr_logfile} -w start index.js", # forever returns 0 even on error, so the restart subcommand is not suited to this
       environment => 'NODE_ENV=production',
-      cwd         => $home,
-      user        => 'root',
-      subscribe   => [ Exec["npm_install_ghost_${blog}"], File["ghost_config_${blog}"], ],
-      require     => Class['ghost::forever'],
-      refreshonly => true,
+      require     => [ Exec["npm_install_ghost_${blog}"], File["ghost_config_${blog}"], ],
     }
 
     exec { "ghost_socket_${blog}_permissions":
       command => "chmod o+rw ${socket}",
-      cwd     => $home,
       onlyif  => "test -S ${socket}",
       require => Exec["restart_ghost_${blog}"]
     }

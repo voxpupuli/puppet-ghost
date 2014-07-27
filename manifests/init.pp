@@ -32,19 +32,33 @@
 class ghost(
   $user          = 'ghost',
   $group         = 'ghost',
-  $home          = '/opt/ghost',
+  $home          = '/home/ghost',
   $blogs         = {},   # Hash of blog resources to create
   $blog_defaults = {},   # Hash of defaults to apply to blog resources
   ) {
 
   validate_string($user)
   validate_string($group)
-  validate_string($home)
+  validate_absolute_path($home)
   validate_hash($blogs)
   validate_hash($blog_defaults)
 
-  include nodejs
+  create_resources(
+    'ghost::blog',
+    hiera_hash('ghost::blogs', {}),
+    hiera_hash('ghost::blog_defaults', {})
+  )
+
   include ghost::setup
 
-  create_resources('ghost::blog', hiera_hash('ghost::blogs', {}), hiera_hash('ghost::blog_defaults', {}))
+  Exec {
+    path    => '/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin',
+    user    => $user,
+  }
+
+  File {
+    owner   => $user,
+    group   => $group,
+    require => User[$user],
+  }
 }
