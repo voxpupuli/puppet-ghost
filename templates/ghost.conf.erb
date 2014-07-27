@@ -1,9 +1,0 @@
-[program:ghost_<%= scope['blog'] %>]
-command		= node <%= scope['home'] %>/index.js
-directory	= <%= scope['home'] %>
-user		= <%= scope['ghost::user'] %>
-autostart	= <%= scope['autostart'] %>
-autorestart	= <%= scope['autorestart'] %>
-stdout_logfile	= <%= scope['stdout_logfile'] %>
-stderr_logfile	= <%= scope['stderr_logfile'] %>
-environment	= NODE_ENV="<%= scope['environment'] %>"
