@@ -8,6 +8,5 @@ description 'Installs, configures, and manages the Ghost Blogging Platform for U
 project_page 'https://github.com/andschwa/puppet-ghost'
 
 dependency 'proletaryo/supervisor', '~> 0.4.0'
-dependency 'puppetlabs/apt',        '~> 1.4.0'
 dependency 'puppetlabs/nodejs',     '~> 0.6.1'
 dependency 'puppetlabs/stdlib',     '~> 4.1.0'
