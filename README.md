@@ -81,9 +81,10 @@ $blog_defaults = {},   # Hash of defaults to apply to blog resources
 It delegates the user and group resources to `ghost::setup`, which executes
 `npm config set registry http://registry.npmjs.org/` to ensure the npm
 registry is correctly set (necessary at least on Ubuntu 12.04), and
-includes a module to setup nodejs. Note that Ghost requires an
-up-to-date nodejs, which can be done automatically by setting that
-class's `manage_repo` parameter to true.
+includes a module to setup nodejs.
+
+Note that Ghost requires an up-to-date nodejs, which can be done
+automatically by setting that class's `manage_repo` parameter to true.
 
 The module has one main resource, `ghost::blog`, with the following
 parameters:
@@ -143,6 +144,11 @@ You can disable management of the `config.js` file by setting
 
 You can disable the use and setup of `supervisor` by setting
 `$use_supervisor` to false.
+
+Note that at least on my Ubuntu test systems, the `supervisor`
+module's execution of `supervisorctl update` fails; this can be fixed
+by manually running that command, letting it do its thing, and then
+re-provisioning.
 
 You will likely want to proxy these using, say, `nginx`. Although the
 inclusion of `nginx` is outside the scope of this module, if you are
