@@ -102,11 +102,5 @@ define ghost::blog(
       stderr_logfile => $stderr_logfile,
       environment    => 'NODE_ENV="production"',
     }
-
-    exec { "ghost_socket_${blog}_permissions":
-      command => "chmod o+rw ${socket}",
-      onlyif  => "test -S ${socket}",
-      require => Supervisor::Program["ghost_${blog}"],
-    }
   }
 }
