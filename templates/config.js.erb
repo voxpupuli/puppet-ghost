@@ -39,15 +39,21 @@ config = {
             },
             debug: false
         },
+
         server: {
-	    <% if @socket -%>
-	    socket: '<%= @socket %>'
-	    <% else -%>
+            <% if @socket -%>
+            <% if @socket.is_a?(Hash) -%>
+	    // Socket to be passed to node's `net.Server#listen()`, either true for default or 'path'
+            socket: '<%= @socket %>'
+            <% else -%>
+            socket: true
+            <% end -%>
+            <% else -%>
             // Host to be passed to node's `net.Server#listen()`
             host: '<%= @host %>',
             // Port to be passed to node's `net.Server#listen()`, for iisnode set this to `process.env.PORT`
             port: '<%= @port %>'
-	    <% end -%>
+            <% end -%>
         }
     }
 };

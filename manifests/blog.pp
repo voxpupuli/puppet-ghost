@@ -1,7 +1,7 @@
 define ghost::blog(
-  $blog   = $title,                    # Subdirectory and conf name for blog
-  $home   = "${ghost::home}/${title}", # Root of Ghost instance
-  $source = 'https://ghost.org/zip/ghost-latest.zip',
+  $blog   = $title,                                   # Subdirectory and conf name for blog
+  $home   = "${ghost::home}/${title}",                # Root of Ghost instance
+  $source = 'https://ghost.org/zip/ghost-latest.zip', # Source for ghost distribution
 
   # Use [supervisor](http://supervisord.org/) to manage Ghost, with logging
   $use_supervisor = true,
@@ -13,10 +13,10 @@ define ghost::blog(
   $manage_config = true, # Manage Ghost's config.js
 
   # For a working blog, these must be specified and different per instance
-  $url    = 'http://my-ghost-blog.com',                  # Required URL of blog
-  $socket = "${ghost::home}/${title}/production.socket", # Set to false to use host and port
-  $host   = '127.0.0.1',
-  $port   = '2368',
+  $url    = 'https://my-ghost-blog.com', # Required URL of blog
+  $socket = true,                        # Set to false to use host and port
+  $host   = '127.0.0.1',                 # Host to listen on if not using socket
+  $port   = '2368',                      # Port of host to listen on
 
   # Mail settings (see http://docs.ghost.org/mail/)
   $transport    = '', # Mail transport
@@ -34,7 +34,12 @@ define ghost::blog(
   validate_bool($manage_config)
   validate_string($url)
   if $socket {
-    validate_absolute_path($socket)
+    if is_string($socket) {
+      validate_absolute_path($socket)
+    }
+    else {
+      validate_bool($socket)
+    }
   }
   validate_string($host)
   validate_re($port, '\d+')
