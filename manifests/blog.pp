@@ -57,7 +57,7 @@ define ghost::blog(
 
   exec { "curl_ghost_${blog}":
     command => "curl -L ${source} -o ghost.zip",
-    onlyif  => 'test ! -f ghost.zip',
+    unless  => 'test -f ghost.zip',
     require => Package['curl'],
   }
 
@@ -79,7 +79,7 @@ define ghost::blog(
     file { "ghost_config_${blog}":
       path    => "${home}/config.js",
       content => template('ghost/config.js.erb'),
-      require => Exec["npm_install_ghost_${blog}"],
+      require => Exec["unzip_ghost_${blog}"],
     }
   }
   else {
