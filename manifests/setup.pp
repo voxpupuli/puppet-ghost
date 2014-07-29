@@ -1,6 +1,6 @@
 class ghost::setup {
 
-  include nodejs
+  if ! defined(Class['nodejs']) { include nodejs }
 
   group { $ghost::group:
     ensure => present,
@@ -15,7 +15,8 @@ class ghost::setup {
   }
 
   exec { 'npm_config_set_registry':
-    command => 'npm config set registry http://registry.npmjs.org/',
+    command => "npm config set registry ${ghost::npm_registry}",
+    unless  => "npm config get registry | grep ${ghost::npm_registry}",
     require => Class['nodejs'],
   }
 }

@@ -71,17 +71,18 @@ This module has one main class, `ghost`, with the following
 parameters:
 
 ```puppet
-$user          = 'ghost',
-$group         = 'ghost',
-$home          = '/home/ghost',
-$blogs         = {},   # Hash of blog resources to create
-$blog_defaults = {},   # Hash of defaults to apply to blog resources
+$user          = 'ghost',                       # Ghost should run as its own user
+$group         = 'ghost',                       # Ghost GID and group to create
+$home          = '/home/ghost',                 # Ghost user's home directory, default base for blogs
+$npm_registry  = 'https://registry.npmjs.org/', # Ghost user's npm registry
+$blogs         = {},                            # Hash of blog resources to create
+$blog_defaults = {},                            # Hash of defaults to apply to blog resources
 ```
 
-It delegates the user and group resources to `ghost::setup`, which executes
-`npm config set registry http://registry.npmjs.org/` to ensure the npm
-registry is correctly set (necessary at least on Ubuntu 12.04), and
-includes a module to setup nodejs.
+It delegates the user and group resources to `ghost::setup`, which
+executes `npm config set registry https://registry.npmjs.org/` to
+ensure the npm registry is correctly set (necessary at least on Ubuntu
+12.04), and includes a module to setup nodejs.
 
 Note that Ghost requires an up-to-date nodejs, which can be done
 automatically by setting that class's `manage_repo` parameter to true.
@@ -90,7 +91,7 @@ The module has one main resource, `ghost::blog`, with the following
 parameters:
 
 ```puppet
-$blog   = $title,                   # Subdirectory and conf name for blog
+$blog   = $title,                    # Subdirectory and conf name for blog
 $home   = "${ghost::home}/${title}", # Root of Ghost instance
 $source = 'https://ghost.org/zip/ghost-latest.zip',
 

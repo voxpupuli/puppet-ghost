@@ -1,5 +1,5 @@
 define ghost::blog(
-  $blog   = $title,                   # Subdirectory and conf name for blog
+  $blog   = $title,                    # Subdirectory and conf name for blog
   $home   = "${ghost::home}/${title}", # Root of Ghost instance
   $source = 'https://ghost.org/zip/ghost-latest.zip',
 

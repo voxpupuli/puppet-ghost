@@ -30,11 +30,12 @@
 # - support other operating systems
 
 class ghost(
-  $user          = 'ghost',
-  $group         = 'ghost',
-  $home          = '/home/ghost',
-  $blogs         = {},   # Hash of blog resources to create
-  $blog_defaults = {},   # Hash of defaults to apply to blog resources
+  $user          = 'ghost',                       # Ghost should run as its own user
+  $group         = 'ghost',                       # Ghost GID and group to create
+  $home          = '/home/ghost',                 # Ghost user's home directory, default base for blogs
+  $npm_registry  = 'https://registry.npmjs.org/', # Ghost user's npm registry
+  $blogs         = {},                            # Hash of blog resources to create
+  $blog_defaults = {},                            # Hash of defaults to apply to blog resources
   ) {
 
   validate_string($user)
