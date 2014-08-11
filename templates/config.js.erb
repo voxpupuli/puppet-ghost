@@ -13,23 +13,23 @@ config = {
         url: '<%= @url %>',
 
         mail: {
-	    <% if defined? @transport -%>
-	    transport: '<%= @transport %>',
-	    <% end -%>
-	    <% if defined? @fromaddress -%>
-	    fromaddress: '<%= @fromaddress %>',
-	    <% end -%>
+            <% if defined? @transport -%>
+            transport: '<%= @transport %>',
+            <% end -%>
+            <% if defined? @fromaddress -%>
+            fromaddress: '<%= @fromaddress %>',
+            <% end -%>
             options: {
-	    <% @mail_options.each do |key, value| -%>
-                <% if value.is_a?(Hash) -%><%= key %>: {
-                    <% value.each do |subkey, subvalue| -%><%= subkey %>: '<%= subvalue %>',
-                    <% end -%>
-		}
-	        <% else -%>
-	        <%= key %>: '<%= value %>',
-		<% end -%>
-	    <% end -%>
-	    }
+            <% @mail_options.each do |key, value| -%>
+            <% if value.is_a?(Hash) -%><%= key %>: {
+                <% value.each do |subkey, subvalue| -%><%= subkey %>: '<%= subvalue %>',
+            <% end -%>
+                }
+            <% else -%>
+                <%= key %>: '<%= value %>',
+            <% end -%>
+            <% end -%>
+            }
         },
 
         database: {
