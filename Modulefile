@@ -1,5 +1,5 @@
 name    'andschwa-ghost'
-version '0.2.0'
+version '0.2.1'
 source 'git://github.com/andschwa/puppet-ghost.git'
 author 'Andrew Schwartzmeyer'
 license 'GNU Affero'
