@@ -4,8 +4,8 @@ define ghost::blog(
   $source = 'https://ghost.org/zip/ghost-latest.zip', # Source for ghost distribution
 
   # Use [supervisor](http://supervisord.org/) to manage Ghost, with logging
-  $use_supervisor = true,
-  $autorestart    = true,
+  $use_supervisor = true, # User supervisor module to setup service for blog
+  $autorestart    = true, # Restart on crash
   $stdout_logfile = "/var/log/ghost_${title}.log",
   $stderr_logfile = "/var/log/ghost_${title}_err.log",
 

@@ -84,8 +84,19 @@ executes `npm config set registry https://registry.npmjs.org/` to
 ensure the npm registry is correctly set (necessary at least on Ubuntu
 12.04), and includes a module to setup nodejs.
 
-Note that Ghost requires an up-to-date nodejs, which can be done
-automatically by setting that class's `manage_repo` parameter to true.
+The socket file created by Ghost must be readable by the web server
+(perhaps Nginx) for communication to take place, but its default
+permissions of 660 do not allow this. Because the Ghost server creates
+the socket file on each launch, it is impossible to control its
+permissions through Puppet. The best solution to this predicament
+[(see issue #14)](https://github.com/andschwa/puppet-ghost/issues/14)
+is to add your web server's user to Ghost's group (e.g. `usermod -a -G
+ghost www-data`), which will allow it to read the socket.
+
+Ghost requires an up-to-date nodejs, which can be done automatically
+by setting that class's `manage_repo` parameter to true. If the
+`nodejs` class is not defined elsewhere, this module will simply
+include it.
 
 The module has one main resource, `ghost::blog`, with the following
 parameters:
