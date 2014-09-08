@@ -19,9 +19,10 @@
 # Copyright 2014 Andrew Schwartzmeyer
 
 class ghost(
-  $user  = 'ghost',       # Ghost should run as its own user
-  $group = 'ghost',       # Ghost GID and group to create
-  $home  = '/home/ghost', # Ghost user's home directory, default base for blogs
+  $user            = 'ghost',       # Ghost should run as its own user
+  $group           = 'ghost',       # Ghost GID and group to create
+  $home            = '/home/ghost', # Ghost user's home directory, default base for blogs
+  $include_nodejs  = false,         # Whether or not setup should include nodejs module
   ) {
 
   validate_string($user)

@@ -10,7 +10,9 @@
 
 class ghost::setup {
 
-  if ! defined(Class['nodejs']) { include nodejs }
+  if $::ghost::manage_nodejs {
+      include nodejs
+  }
 
   group { $ghost::group:
     ensure => present,
