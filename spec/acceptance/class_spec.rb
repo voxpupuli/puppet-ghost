@@ -22,5 +22,24 @@ describe 'ghost class' do
       apply_manifest(pp, :catch_failures => true)
       apply_manifest(pp, :catch_failures => true)
     end
+
+    context 'should create the ghost user' do
+
+      describe user('ghost') do
+        it { should exist }
+      end
+
+      describe group('ghost') do
+        it { should exist }
+      end
+    end
+
+    context 'should create a blog directory called my blog' do
+      describe file('/home/ghost/my_blog') do
+        it {
+          should be_directory
+        }
+      end
+    end
   end
 end
