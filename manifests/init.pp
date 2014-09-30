@@ -44,6 +44,14 @@ class ghost(
   validate_hash($blogs)
   validate_hash($blog_defaults)
 
+  # Create resources from parameters
+  create_resources(
+    'ghost::blog',
+    $blogs,
+    $blog_defaults
+  )
+
+  # Create resource from Hiera
   create_resources(
     'ghost::blog',
     hiera_hash('ghost::blogs', {}),
