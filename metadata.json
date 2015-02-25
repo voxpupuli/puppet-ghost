@@ -1,0 +1,41 @@
+{
+  "name": "andschwa-ghost",
+  "version": "0.3.0",
+  "author": "Andrew Schwartzmeyer",
+  "summary": "Install and Manage Ghost Blog",
+  "license": "GNU Affero",
+  "source": "git://github.com/andschwa/puppet-ghost.git",
+  "project_page": "https://github.com/andschwa/puppet-ghost",
+  "issues_url": "https://github.com/andschwa/puppet-ghost/issues",
+  "requirements": [
+    {
+      "name": "pe",
+      "version_requirement": "3.x"
+    },
+    {
+      "name": "puppet",
+      "version_requirement": ">= 3.3.0"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "12.04",
+        "14.04"
+      ]
+    },
+    {
+      "operatingsystem":"RedHat",
+      "operatingsystemrelease": [
+        "7.0",
+        "6.0"
+      ]
+    },
+  ],
+  "dependencies": [
+    { "name": "puppetlabs/stdlib", "version_requirement": ">= 4.1.0 < 5.0" },
+    { "name": "puppetlabs/nodejs", "version_requirement": ">= 0.6.1 < 2.0" },
+    { "name": "proletaryo/supervisor", "version_requirement": ">= 0.4.0" },
+  ]
+}
