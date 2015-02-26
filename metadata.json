@@ -3,7 +3,7 @@
   "version": "0.3.0",
   "author": "Andrew Schwartzmeyer",
   "summary": "Install and Manage Ghost Blog",
-  "license": "GNU Affero",
+  "license": "AGPL-3.0",
   "source": "git://github.com/andschwa/puppet-ghost.git",
   "project_page": "https://github.com/andschwa/puppet-ghost",
   "issues_url": "https://github.com/andschwa/puppet-ghost/issues",
