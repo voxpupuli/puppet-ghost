@@ -36,7 +36,7 @@ class, adds the ghost user and group, and finally starts ghost.
 ### What andschwa-ghost affects
 
 * Packages
-    * `nodejs`
+  * `nodejs`
 	* `npm`
 	* `unzip`
 	* `curl`
@@ -56,12 +56,20 @@ class, adds the ghost user and group, and finally starts ghost.
 The simplest use of this module is:
 
 ```puppet
-class { ghost:
-  blogs => {
-    'my_blog' => {
-      'url'  => 'http://my-first-ghost-blog.com',
-    }
-  }
+class {'ghost':
+  include_nodejs => true,
+}
+->
+ghost::blog{ 'my_blog':}
+```
+
+#### Ghost Blog Profile
+
+If you just want a working ghost instance, and just want some sensible defaults and hosted by nginx, you can use the [ghost_blog_profile](http://github.com/petems/petems-ghost-blog-profile). This uses this module and sets up a ghost blog to work end-to-end.
+
+```
+class { 'ghost_blog_profile::basic':
+  blog_name => 'my_blog',
 }
 ```
 
@@ -71,27 +79,15 @@ This module has one main class, `ghost`, with the following
 parameters:
 
 ```puppet
-$user          = 'ghost',                       # Ghost should run as its own user
-$group         = 'ghost',                       # Ghost GID and group to create
-$home          = '/home/ghost',                 # Ghost user's home directory, default base for blogs
-$npm_registry  = 'https://registry.npmjs.org/', # Ghost user's npm registry
-$blogs         = {},                            # Hash of blog resources to create
-$blog_defaults = {},                            # Hash of defaults to apply to blog resources
+$user           = 'ghost',                       # Ghost should run as its own user
+$group          = 'ghost',                       # Ghost GID and group to create
+$home           = '/home/ghost',                 # Ghost user's home directory, default base for blogs
+$include_nodejs = false,                         # Whether or not setup should include nodejs module
 ```
 
 It delegates the user and group resources to `ghost::setup`, which
-executes `npm config set registry https://registry.npmjs.org/` to
-ensure the npm registry is correctly set (necessary at least on Ubuntu
-12.04), and includes a module to setup nodejs.
-
-The socket file created by Ghost must be readable by the web server
-(perhaps Nginx) for communication to take place, but its default
-permissions of 660 do not allow this. Because the Ghost server creates
-the socket file on each launch, it is impossible to control its
-permissions through Puppet. The best solution to this predicament
-[(see issue #14)](https://github.com/andschwa/puppet-ghost/issues/14)
-is to add your web server's user to Ghost's group (e.g. `usermod -a -G
-ghost www-data`), which will allow it to read the socket.
+creates the user and group you specify (ghost by default) and installs nodejs
+and NPM using the puppetlabs-nodejs module.
 
 Ghost requires an up-to-date nodejs, which can be done automatically
 by setting that class's `manage_repo` parameter to true. If the
@@ -102,60 +98,26 @@ The module has one main resource, `ghost::blog`, with the following
 parameters:
 
 ```puppet
-$blog   = $title,                    # Subdirectory and conf name for blog
-$home   = "${ghost::home}/${title}", # Root of Ghost instance
-$source = 'https://ghost.org/zip/ghost-latest.zip',
-
-# Use [supervisor](http://supervisord.org/) to manage Ghost, with logging
-$use_supervisor = true,
-$autorestart    = true,
+$user   = 'ghost',                          # Ghost instance should run as its own user
+$group  = 'ghost',
+$home   = "/home/ghost/${title}",           # Root of Ghost instance (will be created if itdoesnot already exist)
+$source = 'https://ghost.org/zip/ghost-latest.zip', # Source for ghost distribution
+# The npm registry on some distributions needs to be set
+$manage_npm_registry = true,                          # Whether or not to attempt to set thenpmregistry (often needed)
+$npm_registry        = 'https://registry.npmjs.org/', # User's npm registry
+$use_supervisor = true, # User supervisor module to setup service for blog
+$autorestart    = true, # Restart on crash
 $stdout_logfile = "/var/log/ghost_${title}.log",
 $stderr_logfile = "/var/log/ghost_${title}_err.log",
-
-# Parameters below affect Ghost's config through the template
 $manage_config = true, # Manage Ghost's config.js
-
-# For a working blog, these must be specified and different per instance
-$url    = 'http://my-ghost-blog.com',                  # Required URL of blog
-$socket = "${ghost::home}/${title}/production.socket", # Set to false to use host and port
-$host   = '127.0.0.1',
-$port   = '2368',
-
-# Mail settings (see http://docs.ghost.org/mail/)
+$url    = 'https://my-ghost-blog.com', # Required URL of blog
+$socket = true,                        # Set to false to use host and port
+$host   = '127.0.0.1',                 # Host to listen on if not using socket
+$port   = '2368',                      # Port of host to listen on
 $transport    = '', # Mail transport
 $fromaddress  = '', # Mail from address
 $mail_options = {}, # Hash for mail options
 ```
-
-These resources can be declared using Hiera by providing a hash to
-`ghost::blogs` specifying the blog resources and their parameters,
-like this:
-
-```yaml
-ghost::blogs:
-  blog_one:
-    url: http://my-first-ghost-blog.com
-    transport: SMTP
-	fromaddress: myemail@address.com
-	mail_options:
-	  auth:
-        user: youremail@gmail.com
-        pass: yourpassword
-  blog_two:
-    url: http://my-second-ghost-blog.com
-    socket: false
-	host: localhost
-    port: 2368
-```
-
-It is *imperative* that each separate instance has a different URL and
-port.
-
-You can disable management of the `config.js` file by setting
-`$manage_config` to false.
-
-You can disable the use and setup of `supervisor` by setting
-`$use_supervisor` to false.
 
 Note that at least on my Ubuntu test systems, the `supervisor`
 module's execution of `supervisorctl update` fails; this can be fixed
@@ -165,46 +127,62 @@ re-provisioning.
 You will likely want to proxy these using, say, `nginx`. Although the
 inclusion of `nginx` is outside the scope of this module, if you are
 using the [jfryman/nginx](https://forge.puppetlabs.com/jfryman/nginx)
-module, you can declare the virtual hosts to proxy the blogs via Hiera
-like so:
+module. An example of using this:
 
-```yaml
-nginx::nginx_upstreams:
-  ghost:
-    members:
-      - unix:/home/ghost/vagrant/production.socket
-nginx::proxy_set_header:
-  - Host $host
-  - X-Real-IP $remote_addr
-  - X-Forwarded-For $proxy_add_x_forwarded_for
-  - X-Forwarded-Proto $scheme
-nginx::server_tokens: 'off'
-nginx::nginx_vhosts:
-  ghost:
-    use_default_location: false
-    rewrite_www_to_non_www: true
-    rewrite_to_https: true
-nginx::nginx_locations:
-  ghost_root:
-    vhost: ghost
-    location: /
-    proxy: http://ghost
-    location_cfg_append:
-      proxy_ignore_headers: Set-Cookie
-      proxy_hide_header: Set-Cookie
+```puppet
+  $blog_name = 'cool_blog'
+
+  class { ghost:}
+  ->
+  ghost::blog{ $blog_name:
+    socket => false,
+    use_supervisor => false,
+  }
+  class { 'nginx':}
+
+  nginx::resource::upstream { "ghost_blog_${blog_name}":
+    members => [
+      'localhost:2368',
+    ],
+  }
+
+  nginx::resource::vhost { $fqdn:
+    proxy => "http://ghost_blog_${blog_name}",
+  }
 ```
+
+This will server the blog
+
+
+
 
 ## Limitations
 
-This module only officially supports Ubuntu, but ought to work with
+* This module only officially supports Ubuntu, but ought to work with
 other operating systems as well.
 
-If managing the blog's `config.js` via this module, you cannot
-currently setup Postgres.
+* If managing the blog's `config.js` via this module, you cannot
+currently setup custom databases
 
-If supervisor is not registering the blogs, restarting your system is
+* The socket file created by Ghost must be readable by the web server
+(perhaps Nginx) for communication to take place, but its default
+permissions of 660 do not allow this. Because the Ghost server creates
+the socket file on each launch, it is impossible to control its
+permissions through Puppet. The best solution to this predicament [(see issue #14)](https://github.com/andschwa/puppet-ghost/issues/14) is to add your web server's user to Ghost's group (e.g. `usermod -a -G ghost www-data`), which will allow it to read the socket.
+
+* If supervisor is not registering the blogs, restarting your system is
 the easiest solution (as always), but you should also try
 `supervisorctrl reread && supervisorctl reload`.
+
+## Upgrading from 0.2.x
+
+There are not many changes from 0.2.0 except the following:
+
+* npm registry management is now done in the `ghost::blog` type, and
+is controlled by the `npm_registry` parameter
+* setting up node using the pupppetlabs-nodejs module is now disabled
+by default, and can be enabled by the use of the `manage_nodejs` parameter
+
 
 ## Upgrading from 0.1.x
 
