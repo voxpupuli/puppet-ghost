@@ -65,7 +65,7 @@ ghost::blog{ 'my_blog':}
 
 #### Ghost Blog Profile
 
-If you just want a working ghost instance, and just want some sensible defaults and hosted by nginx, you can use the [ghost_blog_profile](http://github.com/petems/petems-ghost-blog-profile). This uses this module and sets up a ghost blog to work end-to-end.
+If you just want a working ghost instance, and just want some sensible defaults and hosted by nginx, you can use the [ghost_blog_profile](https://github.com/petems/petems-ghost_blog_profile). This uses this module and sets up a ghost blog to work end-to-end.
 
 ```
 class { 'ghost_blog_profile::basic':
@@ -124,10 +124,10 @@ module's execution of `supervisorctl update` fails; this can be fixed
 by manually running that command, letting it do its thing, and then
 re-provisioning.
 
-You will likely want to proxy these using, say, `nginx`. Although the
+You will likely want to proxy the Ghost instance using, say, `nginx`. Although the
 inclusion of `nginx` is outside the scope of this module, if you are
 using the [jfryman/nginx](https://forge.puppetlabs.com/jfryman/nginx)
-module. An example of using this:
+module, here's a working example:
 
 ```puppet
   $blog_name = 'cool_blog'
@@ -136,7 +136,6 @@ module. An example of using this:
   ->
   ghost::blog{ $blog_name:
     socket => false,
-    use_supervisor => false,
   }
   class { 'nginx':}
 
@@ -151,10 +150,7 @@ module. An example of using this:
   }
 ```
 
-This will server the blog
-
-
-
+This will serve the blog on localhost:80, with some sensible nginx defaults.
 
 ## Limitations
 
