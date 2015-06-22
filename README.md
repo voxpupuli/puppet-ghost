@@ -92,14 +92,22 @@ $include_nodejs = false,                         # Whether or not setup should i
 
 It delegates the user and group resources to `ghost::setup`, which
 creates the user and group you specify (ghost by default) and installs
-nodejs and `npm` using the
+Node.js and `npm` using the
 [puppetlabs-nodejs](https://forge.puppetlabs.com/puppetlabs/nodejs)
 module.
 
 Ghost requires an up-to-date nodejs, which can be done automatically
 by setting that class's `manage_repo` parameter to true. If the
 `nodejs` class is not defined elsewhere, this module will simply
-include it.
+include it. Unfortunately, you probably need to force the install of
+`npm` and the updated version of Node.js, like so:
+
+```puppet
+class { '::nodejs':
+  manage_package_repo => true,
+  npm_package_ensure => 'present'
+}
+```
 
 The module has one main resource, `ghost::blog`, with the following
 parameters:
@@ -137,7 +145,7 @@ You will likely want to proxy the Ghost instance using, say,
 other operating systems as well.
 
 * If managing the blog's `config.js` via this module, you cannot
-currently setup custom databases
+currently setup custom databases.
 
 * The socket file created by Ghost must be readable by the web server
 (perhaps Nginx) for communication to take place, but its default
