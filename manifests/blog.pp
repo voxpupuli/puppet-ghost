@@ -25,10 +25,6 @@ define ghost::blog(
   $home   = "/home/ghost/${title}",                   # Root of Ghost instance (will be created if it does not already exist)
   $source = 'https://ghost.org/zip/ghost-latest.zip', # Source for ghost distribution
 
-  # The npm registry on some distributions needs to be set
-  $manage_npm_registry = true,                          # Whether or not to attempt to set the npm registry (often needed)
-  $npm_registry        = 'https://registry.npmjs.org/', # User's npm registry
-
   # Use [supervisor](http://supervisord.org/) to manage Ghost, with logging
   $use_supervisor = true, # User supervisor module to setup service for blog
   $autorestart    = true, # Restart on crash
@@ -55,8 +51,6 @@ define ghost::blog(
   validate_string($group)
   validate_absolute_path($home)
   validate_string($source)
-  validate_bool($manage_npm_registry)
-  validate_string($npm_registry)
   validate_bool($use_supervisor)
   validate_bool($autorestart)
   validate_absolute_path($stdout_logfile)
@@ -91,14 +85,6 @@ define ghost::blog(
 
   file { $home:
     ensure  => directory,
-  }
-
-  if $manage_npm_registry {
-    exec { "npm_config_set_registry_${blog}":
-      command => "npm config set registry ${npm_registry}",
-      unless  => "npm config get registry | grep ${npm_registry}",
-      before  => Exec["npm_install_ghost_${blog}"],
-    }
   }
 
   ensure_packages(['unzip', 'curl'])
@@ -139,7 +125,7 @@ define ghost::blog(
 
   if $use_supervisor {
     supervisor::program { "ghost_${blog}":
-      command        => "node ${home}/index.js",
+      command        => "nodejs ${home}/index.js",
       autorestart    => $autorestart,
       user           => $user,
       group          => $group,
