@@ -56,22 +56,27 @@ class, adds the ghost user and group, and finally starts ghost.
 The simplest use of this module is:
 
 ```puppet
-class {'ghost':
+class { 'ghost':
   include_nodejs => true,
-}
-->
-ghost::blog{ 'my_blog':}
+} -> ghost::blog { 'my_blog': }
 ```
 
 #### Ghost Blog Profile
 
-If you just want a working ghost instance, and just want some sensible defaults and hosted by nginx, you can use the [ghost_blog_profile](https://github.com/petems/petems-ghost_blog_profile). This uses this module and sets up a ghost blog to work end-to-end.
+If you just want a working ghost instance, and just want some sensible
+defaults and hosted by nginx, you can use the
+[ghost_blog_profile](https://github.com/petems/petems-ghost_blog_profile). This
+uses this module and sets up a ghost blog to work end-to-end.
 
 ```
 class { 'ghost_blog_profile::basic':
   blog_name => 'my_blog',
 }
 ```
+
+Here is an alternative
+[Puppet profile](https://github.com/andschwa/puppet-profile/blob/master/manifests/ghost.pp)
+for a Ghost blog with Nginx.
 
 ### Usage
 
