@@ -125,7 +125,7 @@ define ghost::blog(
 
   if $use_supervisor {
     supervisor::program { "ghost_${blog}":
-      command        => "node ${home}/index.js",
+      command        => "nodejs ${home}/index.js",
       autorestart    => $autorestart,
       user           => $user,
       group          => $group,
