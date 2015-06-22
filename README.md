@@ -91,8 +91,10 @@ $include_nodejs = false,                         # Whether or not setup should i
 ```
 
 It delegates the user and group resources to `ghost::setup`, which
-creates the user and group you specify (ghost by default) and installs nodejs
-and NPM using the puppetlabs-nodejs module.
+creates the user and group you specify (ghost by default) and installs
+nodejs and `npm` using the
+[puppetlabs-nodejs](https://forge.puppetlabs.com/puppetlabs/nodejs)
+module.
 
 Ghost requires an up-to-date nodejs, which can be done automatically
 by setting that class's `manage_repo` parameter to true. If the
@@ -107,18 +109,15 @@ $user   = 'ghost',                          # Ghost instance should run as its o
 $group  = 'ghost',
 $home   = "/home/ghost/${title}",           # Root of Ghost instance (will be created if itdoesnot already exist)
 $source = 'https://ghost.org/zip/ghost-latest.zip', # Source for ghost distribution
-# The npm registry on some distributions needs to be set
-$manage_npm_registry = true,                          # Whether or not to attempt to set thenpmregistry (often needed)
-$npm_registry        = 'https://registry.npmjs.org/', # User's npm registry
 $use_supervisor = true, # User supervisor module to setup service for blog
 $autorestart    = true, # Restart on crash
 $stdout_logfile = "/var/log/ghost_${title}.log",
 $stderr_logfile = "/var/log/ghost_${title}_err.log",
 $manage_config = true, # Manage Ghost's config.js
 $url    = 'https://my-ghost-blog.com', # Required URL of blog
-$socket = true,                        # Set to false to use host and port
 $host   = '127.0.0.1',                 # Host to listen on if not using socket
 $port   = '2368',                      # Port of host to listen on
+$socket = false,                       # Set to false to use host and port
 $transport    = '', # Mail transport
 $fromaddress  = '', # Mail from address
 $mail_options = {}, # Hash for mail options
@@ -144,11 +143,34 @@ currently setup custom databases
 (perhaps Nginx) for communication to take place, but its default
 permissions of 660 do not allow this. Because the Ghost server creates
 the socket file on each launch, it is impossible to control its
-permissions through Puppet. The best solution to this predicament [(see issue #14)](https://github.com/andschwa/puppet-ghost/issues/14) is to add your web server's user to Ghost's group (e.g. `usermod -a -G ghost www-data`), which will allow it to read the socket.
+permissions through Puppet. The best solution to this predicament
+[(see issue #14)](https://github.com/andschwa/puppet-ghost/issues/14)
+is to add your web server's user to Ghost's group (e.g. `usermod -a -G
+ghost www-data`), which will allow it to read the socket.
 
 * If supervisor is not registering the blogs, restarting your system is
 the easiest solution (as always), but you should also try
 `supervisorctrl reread && supervisorctl reload`.
+
+## Upgrading from 0.3.x
+
+The `npm` registry management has been removed. If more advanced setup
+of Node.js is required, use the
+[puppetlabs/nodejs](https://forge.puppetlabs.com/puppetlabs/nodejs)
+module directly.
+
+The blog resource now uses host and port by default, same as Ghost's
+defaults. If you were using sockets and would like to continue to do
+so, set the appropriate parameter explicitly:
+
+```
+ghost::blog { 'my_blog':
+    socket => true
+}
+```
+
+Beware that supervisord will be replaced with systemd in the 1.0.0
+release.
 
 ## Upgrading from 0.2.x
 
