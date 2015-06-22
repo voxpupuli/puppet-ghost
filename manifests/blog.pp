@@ -40,9 +40,9 @@ define ghost::blog(
 
   # For a working blog, these must be specified and different per instance
   $url    = 'https://my-ghost-blog.com', # Required URL of blog
-  $socket = true,                        # Set to false to use host and port
   $host   = '127.0.0.1',                 # Host to listen on if not using socket
   $port   = '2368',                      # Port of host to listen on
+  $socket = false,                       # True will use a socket instead
 
   # Mail settings (see http://docs.ghost.org/mail/)
   $transport    = '', # Mail transport
