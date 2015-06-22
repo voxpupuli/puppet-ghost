@@ -11,7 +11,7 @@
 class ghost::setup {
 
   if $::ghost::include_nodejs {
-    include nodejs
+    include '::nodejs'
   }
 
   group { $ghost::group:
