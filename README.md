@@ -129,33 +129,8 @@ module's execution of `supervisorctl update` fails; this can be fixed
 by manually running that command, letting it do its thing, and then
 re-provisioning.
 
-You will likely want to proxy the Ghost instance using, say, `nginx`. Although the
-inclusion of `nginx` is outside the scope of this module, if you are
-using the [jfryman/nginx](https://forge.puppetlabs.com/jfryman/nginx)
-module, here's a working example:
-
-```puppet
-  $blog_name = 'cool_blog'
-
-  class { ghost:}
-  ->
-  ghost::blog{ $blog_name:
-    socket => false,
-  }
-  class { 'nginx':}
-
-  nginx::resource::upstream { "ghost_blog_${blog_name}":
-    members => [
-      'localhost:2368',
-    ],
-  }
-
-  nginx::resource::vhost { $fqdn:
-    proxy => "http://ghost_blog_${blog_name}",
-  }
-```
-
-This will serve the blog on localhost:80, with some sensible nginx defaults.
+You will likely want to proxy the Ghost instance using, say,
+`nginx`. The setup of `nginx` is outside the scope of this module.
 
 ## Limitations
 
