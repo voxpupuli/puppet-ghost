@@ -13,7 +13,7 @@ describe 'ghost class' do
       class {'ghost':}
       ->
       ghost::blog{ 'my_blog':
-        use_supervisor => false,
+        use_supervisor => true,
         socket         => false,
       }
       EOS
@@ -30,5 +30,16 @@ describe 'ghost class' do
     describe command('ls -al /home/ghost/my_blog') do
       its(:stdout) { should match /README.md/ }
     end
+
+    context 'Ghost should be running on the default port' do
+      describe command('sleep 10 && echo "Give Ghost time to start"') do
+        its(:exit_status) { should eq 0 }
+      end
+
+      describe command('curl 0.0.0.0:2368/') do
+        its(:stdout) { should match /Redirecting to https:\/\/my-ghost-blog.com\// }
+      end
+    end
+
   end
 end
