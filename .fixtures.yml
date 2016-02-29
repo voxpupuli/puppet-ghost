@@ -1,7 +1,10 @@
 fixtures:
   repositories:
-    stdlib: "https://github.com/puppetlabs/puppetlabs-stdlib.git"
-    nodejs: "https://github.com/puppetlabs/puppetlabs-nodejs.git"
-    supervisor: "https://github.com/proletaryo/puppet-supervisor.git"
+    stdlib:
+      repo: 'git://github.com/puppetlabs/puppetlabs-stdlib'
+    nodejs:
+      repo: 'https://github.com/puppetlabs/puppetlabs-nodejs.git'
+  forge_modules:
+    supervisor: "proletaryo-supervisor"
   symlinks:
     ghost: "#{source_dir}"
