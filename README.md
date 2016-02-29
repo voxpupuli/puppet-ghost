@@ -124,11 +124,6 @@ $fromaddress  = '', # Mail from address
 $mail_options = {}, # Hash for mail options
 ```
 
-Note that at least on my Ubuntu test systems, the `supervisor`
-module's execution of `supervisorctl update` fails; this can be fixed
-by manually running that command, letting it do its thing, and then
-re-provisioning.
-
 You will likely want to proxy the Ghost instance using, say,
 `nginx`. The setup of `nginx` is outside the scope of this module.
 
@@ -145,10 +140,6 @@ currently setup custom databases
 permissions of 660 do not allow this. Because the Ghost server creates
 the socket file on each launch, it is impossible to control its
 permissions through Puppet. The best solution to this predicament [(see issue #14)](https://github.com/andschwa/puppet-ghost/issues/14) is to add your web server's user to Ghost's group (e.g. `usermod -a -G ghost www-data`), which will allow it to read the socket.
-
-* If supervisor is not registering the blogs, restarting your system is
-the easiest solution (as always), but you should also try
-`supervisorctrl reread && supervisorctl reload`.
 
 ## Upgrading from 0.2.x
 

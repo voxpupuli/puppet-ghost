@@ -138,6 +138,20 @@ define ghost::blog(
   }
 
   if $use_supervisor {
+    case $::osfamily {
+      'redhat': {
+        $path_bin = '/usr/bin'
+      }
+      'debian': {
+        $path_bin = '/usr/local/bin'
+      }
+      default: {
+        fail("ERROR - ${::osfamily} based systems are not supported!")
+      }
+    }
+
+    Class['::supervisor']
+    ->
     supervisor::program { "ghost_${blog}":
       command        => "node ${home}/index.js",
       autorestart    => $autorestart,
@@ -147,6 +161,15 @@ define ghost::blog(
       stdout_logfile => $stdout_logfile,
       stderr_logfile => $stderr_logfile,
       environment    => 'NODE_ENV="production"',
+    }
+    ~>
+    exec { 'supervisor::update':
+      command     => "${path_bin}/supervisorctl reread && ${path_bin}/supervisorctl update",
+      user        => 'root',
+      group       => 'root',
+      logoutput   => on_failure,
+      refreshonly => true,
+      require     => Service['supervisord'],
     }
   }
 }
