@@ -16,7 +16,7 @@ describe 'ghost class' do
 
     describe user('ghost') do
       it { should exist }
-      it { should belong_to_group 'group' }
+      it { should belong_to_group 'ghost' }
     end
 
     describe group('ghost') do
