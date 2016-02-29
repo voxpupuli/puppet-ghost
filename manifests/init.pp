@@ -29,7 +29,7 @@ class ghost(
   validate_string($group)
   validate_absolute_path($home)
 
-  include ghost::setup
+  include ::ghost::setup
 
   Ghost::Blog <| |> {
     require => Class['ghost::setup']
