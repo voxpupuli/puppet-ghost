@@ -1,28 +1,43 @@
 ---
 sudo: false
 language: ruby
-before_install:
-  - gem install bundler
+cache: bundler
 bundler_args: --without system_tests
-script: "bundle exec rake validate && bundle exec rake lint && bundle exec rake spec SPEC_OPTS='--format documentation'"
+before_install: rm Gemfile.lock || true
+script:
+  - 'bundle exec rake $CHECK'
 matrix:
   fast_finish: true
   include:
   - rvm: 1.9.3
-    env: PUPPET_GEM_VERSION="~> 3.0" STRICT_VARIABLES="yes" ORDERING="random"
-  - rvm: 2.0.0
-    env: PUPPET_GEM_VERSION="~> 3.0" STRICT_VARIABLES="yes" ORDERING="random"
-  - rvm: 2.1.6
-    env: PUPPET_GEM_VERSION="~> 4.0" STRICT_VARIABLES="yes" ORDERING="random"
-  - rvm: '2.1.6'
-    sudo: required
-    services: docker
-    env: PUPPET_VERSION="3.8.4" BEAKER_set="centos-6-docker-x64"
-    script: bundle exec rake acceptance
-    bundler_args: --without development
-  - rvm: '2.1.6'
-    sudo: required
-    services: docker
-    env: PUPPET_VERSION="3.8.4" BEAKER_set="ubuntu-server-1204-docker-x64"
-    script: bundle exec rake acceptance
-    bundler_args: --without development
+    env: PUPPET_VERSION="~> 3.0" STRICT_VARIABLES="yes" CHECK=test
+  - rvm: 2.1.8
+    env: PUPPET_VERSION="~> 3.0" STRICT_VARIABLES="yes" CHECK=test
+  - rvm: 1.9.3
+    env: PUPPET_VERSION="~> 3.0" STRICT_VARIABLES="yes" CHECK=test FUTURE_PARSER=yes
+  - rvm: 2.1.8
+    env: PUPPET_VERSION="~> 3.0" STRICT_VARIABLES="yes" CHECK=test FUTURE_PARSER=yes
+  - rvm: 2.1.8
+    env: PUPPET_VERSION="~> 4.0" STRICT_VARIABLES="yes" CHECK=test
+  - rvm: 2.2.4
+    env: PUPPET_VERSION="~> 4.0" STRICT_VARIABLES="yes" CHECK=test
+  - rvm: 2.2.4
+    env: PUPPET_VERSION="~> 4.0" STRICT_VARIABLES="yes" CHECK=rubocop
+  - rvm: 2.3.0
+    env: PUPPET_VERSION="~> 4.0" STRICT_VARIABLES="yes" CHECK=test
+  allow_failures:
+    - rvm: 2.3.0
+      env: PUPPET_VERSION="~> 4.0" STRICT_VARIABLES="yes" CHECK=test
+notifications:
+  email: false
+deploy:
+  provider: puppetforge
+  user: puppet
+  password:
+    secure: ""
+  on:
+    tags: true
+    # all_branches is required to use tags
+    all_branches: true
+    # Only publish if our main Ruby target builds
+    rvm: 1.9.3

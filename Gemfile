@@ -17,6 +17,10 @@ group :test do
   gem 'metadata-json-lint',                                         :require => false
   gem 'rspec-puppet-facts',                                         :require => false
   gem 'rspec',                                                      :require => false
+  gem 'puppet-blacksmith',                                          :require => false, :git => 'https://github.com/voxpupuli/puppet-blacksmith.git'
+  gem 'voxpupuli-release',                                          :require => false, :git => 'https://github.com/voxpupuli/voxpupuli-release-gem.git'
+  gem 'rubocop', '0.37.2',                                          :require => false
+  gem 'rspec-puppet-utils',                                         :require => false
   gem 'puppetlabs_spec_helper',                                     :require => false
   gem 'puppet-lint-absolute_classname-check',                       :require => false
   gem 'puppet-lint-leading_zero-check',                             :require => false
@@ -56,3 +60,5 @@ end
 
 ENV['PUPPET_VERSION'].nil? ? puppetversion = '3.8.4' : puppetversion = ENV['PUPPET_VERSION'].to_s
 gem 'puppet', puppetversion, :require => false, :groups => [:test]
+
+# vim:ft=ruby
