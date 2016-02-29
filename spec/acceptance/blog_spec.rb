@@ -7,7 +7,7 @@ describe 'ghost class' do
     it 'should work idempotently with no errors' do
       pp = <<-EOS
       class { 'nodejs':
-        manage_repo => true,
+        manage_package_repo => true,
       }
       ->
       class {'ghost':}
