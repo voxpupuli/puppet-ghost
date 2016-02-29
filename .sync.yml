@@ -1,0 +1,15 @@
+---
+.travis.yml:
+  includes:
+  - rvm: '2.1.6'
+    sudo: required
+    services: docker
+    env: PUPPET_VERSION="3.8.4" BEAKER_set="centos-6-docker-x64"
+    script: bundle exec rake acceptance
+    bundler_args: --without development
+  - rvm: '2.1.6'
+    sudo: required
+    services: docker
+    env: PUPPET_VERSION="3.8.4" BEAKER_set="ubuntu-server-1204-docker-x64"
+    script: bundle exec rake acceptance
+    bundler_args: --without development
