@@ -1,7 +1,6 @@
 require 'spec_helper_acceptance'
 
 describe 'ghost class' do
-
   context 'default parameters' do
     # Using puppet_apply as a helper
     it 'should work idempotently with no errors' do
@@ -28,7 +27,7 @@ describe 'ghost class' do
     end
 
     describe command('ls -al /home/ghost/my_blog') do
-      its(:stdout) { should match /README.md/ }
+      its(:stdout) { should match(/README.md/) }
     end
 
     context 'Ghost should be running on the default port' do
@@ -37,9 +36,8 @@ describe 'ghost class' do
       end
 
       describe command('curl 0.0.0.0:2368/') do
-        its(:stdout) { should match /Redirecting to https:\/\/my-ghost-blog.com\// }
+        its(:stdout) { should match %r{Redirecting to https:\/\/my-ghost-blog.com\/} }
       end
     end
-
   end
 end
