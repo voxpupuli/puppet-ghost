@@ -1,4 +1,6 @@
-# andschwa-ghost
+# puppet-ghost
+
+Donated by the excellet [@andschwa](https://twitter.com/andschwa)
 
 #### Table of Contents
 
@@ -139,7 +141,7 @@ currently setup custom databases
 (perhaps Nginx) for communication to take place, but its default
 permissions of 660 do not allow this. Because the Ghost server creates
 the socket file on each launch, it is impossible to control its
-permissions through Puppet. The best solution to this predicament [(see issue #14)](https://github.com/andschwa/puppet-ghost/issues/14) is to add your web server's user to Ghost's group (e.g. `usermod -a -G ghost www-data`), which will allow it to read the socket.
+permissions through Puppet. The best solution to this predicament [(see issue #14)](https://github.com/voxpupuli/puppet-ghost/issues/14) is to add your web server's user to Ghost's group (e.g. `usermod -a -G ghost www-data`), which will allow it to read the socket.
 
 ## Upgrading from 0.2.x
 
@@ -164,7 +166,7 @@ changes:
   module is now used to create a supervisor program in a
   cross-platform manner
 - The
-  [puppetlabs/nodejs](https://github.com/puppetlabs/puppetlabs-nodejs/)
+  [puppetlabs/nodejs](https://github.com/voxpupuli/puppet-nodejs/)
   module is now used to install nodejs and npm in a cross-platform
   manner
 - The 'development' config settings have been removed, in favor of
@@ -182,5 +184,5 @@ changes:
 
 ## Development
 
-Fork on [GitHub](https://github.com/andschwa/puppet-ghost), make a
+Fork on [GitHub](https://github.com/voxpupuli/puppet-ghost), make a
 Pull Request.
