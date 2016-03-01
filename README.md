@@ -1,4 +1,4 @@
-# puppet-ghost
+# puppet-ghost [![Build Status](https://travis-ci.org/voxpupuli/puppet-ghost.svg?branch=master)](https://travis-ci.org/voxpupuli/puppet-ghost)
 
 Donated by the excellet [@andschwa](https://twitter.com/andschwa)
 
