@@ -27,7 +27,7 @@ describe 'ghost class' do
     end
 
     describe command('ls -al /home/ghost/my_blog') do
-      its(:stdout) { should match(/README.md/) }
+      its(:stdout) { should match(%r{README.md}) }
     end
 
     context 'Ghost should be running on the default port' do
