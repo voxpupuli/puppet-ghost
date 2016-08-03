@@ -10,11 +10,11 @@ describe 'ghost::blog', type: :define do
   let(:title) { 'my_blog' }
 
   describe 'defaults' do
-    it {
+    it do
       should contain_exec('curl_ghost_my_blog')
-    }
-    it {
+    end
+    it do
       should contain_exec('unzip_ghost_my_blog')
-    }
+    end
   end
 end
