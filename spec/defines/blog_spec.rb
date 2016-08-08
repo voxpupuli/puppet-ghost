@@ -2,10 +2,10 @@ require 'spec_helper'
 describe 'ghost::blog', type: :define do
   let :facts do
     {
-    osfamily: 'Debian',
+      osfamily: 'Debian',
     lsbdistid: 'Debian',
     lsbrelease: 'wheezy'
-  }
+    }
   end
 
   let(:title) { 'my_blog' }
