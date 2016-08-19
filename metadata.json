@@ -1,12 +1,12 @@
 {
-  "name": "andschwa-ghost",
-  "version": "0.3.1",
-  "author": "Andrew Schwartzmeyer",
+  "name": "puppet-ghost",
+  "version": "1.0.0",
+  "author": "Vox Pupuli",
   "summary": "Install and Manage Ghost Blogs",
   "license": "AGPL-3.0",
-  "source": "git://github.com/andschwa/puppet-ghost.git",
-  "project_page": "https://github.com/andschwa/puppet-ghost",
-  "issues_url": "https://github.com/andschwa/puppet-ghost/issues",
+  "source": "https://github.com/voxpupuli/puppet-ghost.git",
+  "project_page": "https://github.com/voxpupuli/puppet-ghost",
+  "issues_url": "https://github.com/voxpupuli/puppet-ghost/issues",
   "requirements": [
     {
       "name": "pe",
