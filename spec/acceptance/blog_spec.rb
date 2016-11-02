@@ -23,20 +23,20 @@ describe 'ghost class' do
     end
 
     describe file('/home/ghost/my_blog') do
-      it { should be_directory }
+      it { is_expected.to be_directory }
     end
 
     describe command('ls -al /home/ghost/my_blog') do
-      its(:stdout) { should match(%r{README.md}) }
+      its(:stdout) { is_expected.to match(%r{README.md}) }
     end
 
     context 'Ghost should be running on the default port' do
       describe command('sleep 10 && echo "Give Ghost time to start"') do
-        its(:exit_status) { should eq 0 }
+        its(:exit_status) { is_expected.to eq 0 }
       end
 
       describe command('curl 0.0.0.0:2368/') do
-        its(:stdout) { should match %r{Redirecting to https:\/\/my-ghost-blog.com\/} }
+        its(:stdout) { is_expected.to match %r{Redirecting to https:\/\/my-ghost-blog.com\/} }
       end
     end
   end

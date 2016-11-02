@@ -14,12 +14,12 @@ describe 'ghost class' do
     end
 
     describe user('ghost') do
-      it { should exist }
-      it { should belong_to_group 'ghost' }
+      it { is_expected.to exist }
+      it { is_expected.to belong_to_group 'ghost' }
     end
 
     describe group('ghost') do
-      it { should exist }
+      it { is_expected.to exist }
     end
   end
 end

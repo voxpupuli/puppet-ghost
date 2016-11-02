@@ -12,10 +12,10 @@ describe 'ghost::blog', type: :define do
 
   describe 'defaults' do
     it do
-      should contain_exec('curl_ghost_my_blog')
+      is_expected.to contain_exec('curl_ghost_my_blog')
     end
     it do
-      should contain_exec('unzip_ghost_my_blog')
+      is_expected.to contain_exec('unzip_ghost_my_blog')
     end
   end
 end
