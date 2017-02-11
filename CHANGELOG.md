@@ -1,3 +1,11 @@
+# Changelog
+
+## 2017-02-11 Release 1.1.0
+
+This is the last release with Puppet3 support!
+*	rubocop: fix RSpec/ImplicitExpect
+* Modulesync
+
 ## 2016-08-19 Release 1.0.0
 
 * First release in the Vox Pupuli namespace (module provided by andschwa)
