@@ -151,8 +151,8 @@ define ghost::blog(
     }
 
     Class['::supervisor']
-    ->
-    supervisor::program { "ghost_${blog}":
+    
+    -> supervisor::program { "ghost_${blog}":
       command        => "node ${home}/index.js",
       autorestart    => $autorestart,
       user           => $user,
@@ -162,8 +162,8 @@ define ghost::blog(
       stderr_logfile => $stderr_logfile,
       environment    => 'NODE_ENV="production"',
     }
-    ~>
-    exec { 'supervisor::update':
+    
+    ~> exec { 'supervisor::update':
       command     => "${path_bin}/supervisorctl reread && ${path_bin}/supervisorctl update",
       user        => 'root',
       group       => 'root',
