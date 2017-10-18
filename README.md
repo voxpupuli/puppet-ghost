@@ -1,14 +1,14 @@
 # puppet-ghost [![Build Status](https://travis-ci.org/voxpupuli/puppet-ghost.svg?branch=master)](https://travis-ci.org/voxpupuli/puppet-ghost)
 
-Donated by the excellet [@andschwa](https://twitter.com/andschwa)
+Donated by the excellent [@andschwa](https://twitter.com/andschwa)
 
 #### Table of Contents
 
 1. [Overview](#overview)
 2. [Module Description](#module-description)
-3. [Setup - The basics of getting started with andschwa-ghost](#setup)
-    * [What andschwa-ghost affects](#what-andschwa-ghost-affects)
-    * [Beginning with andschwa-ghost](#beginning-with-andschwa-ghost)
+3. [Setup - The basics of getting started with ghost](#setup)
+    * [What ghost affects](#what-ghost-affects)
+    * [Beginning with ghost](#beginning-with-ghost)
 4. [Usage - Configuration options and additional functionality](#usage)
 5. [Limitations - OS compatibility, etc.](#limitations)
 6. [Development - Guide for contributing to the module](#development)
@@ -35,7 +35,7 @@ class, adds the ghost user and group, and finally starts ghost.
 
 ## Setup
 
-### What andschwa-ghost affects
+### What ghost affects
 
 * Packages
   * `nodejs`
@@ -53,7 +53,7 @@ class, adds the ghost user and group, and finally starts ghost.
 * Group
     * `ghost`
 
-### Beginning with andschwa-ghost
+### Beginning with ghost
 
 The simplest use of this module is:
 
@@ -70,15 +70,23 @@ defaults and hosted by nginx, you can use the
 [ghost_blog_profile](https://github.com/petems/petems-ghost_blog_profile). This
 uses this module and sets up a ghost blog to work end-to-end.
 
-```
+```puppet
 class { 'ghost_blog_profile::basic':
   blog_name => 'my_blog',
 }
 ```
 
-Here is an alternative
-[Puppet profile](https://github.com/andschwa/puppet-profile/blob/master/manifests/ghost.pp)
-for a Ghost blog with Nginx.
+Here is an alternative Puppet profile for a Ghost blog with Nginx.
+```puppet
+class profile::ghost {
+  include profile::web
+
+  include nodejs
+
+  include ::ghost
+  create_resources('ghost::blog', hiera_hash('ghost::blogs', {}))
+}
+```
 
 ### Usage
 
