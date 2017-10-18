@@ -1,14 +1,12 @@
-# == Class: ghost::setup
+# ghost::setup
 #
-# This class includes nodejs if not already defined, and creates the
-# ghost user and group. It is not meant to be used directly, but
-# included from the base Ghost class.
-#
-# === Copyright
+# @summary This class includes nodejs if not already defined, and creates the
+#  ghost user and group. Private class.
 #
 # Copyright 2014 Andrew Schwartzmeyer
-
 class ghost::setup {
+
+  assert_private()
 
   if $ghost::include_nodejs {
     include nodejs
