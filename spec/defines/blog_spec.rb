@@ -3,7 +3,8 @@ describe 'ghost::blog', type: :define do
   let :facts do
     {
       osfamily: 'Debian',
-      lsbdistid: 'Ubuntu'
+      operatingsystem: 'Ubuntu',
+      operatingsystemmajrelease: '14.04'
     }
   end
 
