@@ -3,8 +3,7 @@ describe 'ghost::blog', type: :define do
   let :facts do
     {
       osfamily: 'Debian',
-      lsbdistid: 'Debian',
-      lsbrelease: 'wheezy'
+      lsbdistid: 'Ubuntu'
     }
   end
 

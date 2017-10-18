@@ -17,19 +17,14 @@
 # === Copyright
 #
 # Copyright 2014 Andrew Schwartzmeyer
-
 class ghost(
-  $user            = 'ghost',       # Ghost should run as its own user
-  $group           = 'ghost',       # Ghost GID and group to create
-  $home            = '/home/ghost', # Ghost user's home directory, default base for blogs
-  $include_nodejs  = false,         # Whether or not setup should include nodejs module
+  String $user               = 'ghost',       # Ghost should run as its own user
+  String $group              = 'ghost',       # Ghost GID and group to create
+  Stdlib::Absolutepath $home = '/home/ghost', # Ghost user's home directory, default base for blogs
+  Boolean $include_nodejs    = false,         # Whether or not setup should include nodejs module
   ) {
 
-  validate_string($user)
-  validate_string($group)
-  validate_absolute_path($home)
-
-  include ::ghost::setup
+  contain ghost::setup
 
   Ghost::Blog <| |> {
     require => Class['ghost::setup']
