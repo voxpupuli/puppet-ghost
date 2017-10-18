@@ -10,8 +10,8 @@
 
 class ghost::setup {
 
-  if $::ghost::include_nodejs {
-    include ::nodejs
+  if $ghost::include_nodejs {
+    include nodejs
   }
 
   group { $ghost::group:

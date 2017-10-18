@@ -10,6 +10,7 @@ describe 'ghost' do
 
         context 'ghost class without any parameters' do
           let(:params) { {} }
+
           it { is_expected.to compile.with_all_deps }
           it { is_expected.to contain_class('ghost') }
           it { is_expected.to contain_class('ghost::setup') }
