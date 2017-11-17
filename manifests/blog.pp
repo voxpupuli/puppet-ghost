@@ -39,8 +39,8 @@ define ghost::blog(
   Stdlib::HTTPSUrl $source                       = 'https://ghost.org/zip/ghost-latest.zip',
   Boolean $manage_npm_registry                   = true,
   Stdlib::HTTPSUrl $npm_registry                 = 'https://registry.npmjs.org/',
-  Boolean $use_supervisor                        = true,
-  Boolean $autorestart                           = true,
+  Boolean $use_supervisord                       = true, # User supervisor module to setup service for blog
+  Boolean $autorestart                           = true, # Restart on crash
   Stdlib::Absolutepath $stdout_logfile           = "/var/log/ghost_${title}.log",
   Stdlib::Absolutepath $stderr_logfile           = "/var/log/ghost_${title}_err.log",
   Boolean $manage_config                         = true,
@@ -113,8 +113,8 @@ define ghost::blog(
     }
   }
 
-  if $use_supervisor {
-    require supervisor
+  if $use_supervisord {
+    require supervisord
 
     case $::osfamily {
       'redhat': {
@@ -128,25 +128,16 @@ define ghost::blog(
       }
     }
 
-    Class['supervisor']
-    -> supervisor::program { "ghost_${blog}":
-      command        => "node ${home}/index.js",
-      autorestart    => $autorestart,
-      user           => $user,
-      group          => $group,
-      directory      => $home,
-      stdout_logfile => $stdout_logfile,
-      stderr_logfile => $stderr_logfile,
-      environment    => 'NODE_ENV="production"',
-    }
-
-    ~> exec { 'supervisor::update':
-      command     => "${path_bin}/supervisorctl reread && ${path_bin}/supervisorctl update",
-      user        => 'root',
-      group       => 'root',
-      logoutput   => on_failure,
-      refreshonly => true,
-      require     => Service['supervisord'],
+    Class['supervisord']
+    -> supervisord::program { "ghost_${blog}":
+      command             => "node ${home}/index.js",
+      autorestart         => $autorestart,
+      user                => $user,
+      directory           => $home,
+      stdout_logfile      => $stdout_logfile,
+      stderr_logfile      => $stderr_logfile,
+      program_environment => { 'NODE_ENV' => 'production' },
+      notify              => Service['supervisord'],
     }
   }
 }
