@@ -23,8 +23,8 @@
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "7.0",
-        "6.0"
+        "7",
+        "6"
       ]
     }
   ],
