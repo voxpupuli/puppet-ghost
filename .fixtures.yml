@@ -4,5 +4,3 @@ fixtures:
     nodejs: 'https://github.com/voxpupuli/puppet-nodejs.git'
     supervisord: 'https://github.com/ajcrowe/puppet-supervisord'
     concat: "https://github.com/puppetlabs/puppetlabs-concat.git"
-  symlinks:
-    ghost: "#{source_dir}"
