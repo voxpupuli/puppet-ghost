@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v2.1.1](https://github.com/voxpupuli/puppet-ghost/tree/v2.1.1) (2018-10-20)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ghost/compare/v2.1.0...v2.1.1)
+
+**Merged pull requests:**
+
+- modulesync 2.1.0 and allow puppet 6.x [\#90](https://github.com/voxpupuli/puppet-ghost/pull/90) ([bastelfreak](https://github.com/bastelfreak))
+- fix wrong version schema in metadata.json [\#89](https://github.com/voxpupuli/puppet-ghost/pull/89) ([bastelfreak](https://github.com/bastelfreak))
+- allow puppet/nodejs 6.x [\#88](https://github.com/voxpupuli/puppet-ghost/pull/88) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v2.1.0](https://github.com/voxpupuli/puppet-ghost/tree/v2.1.0) (2018-09-06)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ghost/compare/v2.0.0...v2.1.0)
