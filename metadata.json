@@ -1,6 +1,6 @@
 {
   "name": "puppet-ghost",
-  "version": "2.1.1",
+  "version": "2.1.2-rc0",
   "author": "Vox Pupuli",
   "summary": "Install and Manage Ghost Blogs",
   "license": "AGPL-3.0",
