@@ -2,9 +2,11 @@ require 'spec_helper'
 describe 'ghost::blog', type: :define do
   let :facts do
     {
-      osfamily: 'Debian',
-      operatingsystem: 'Ubuntu',
-      operatingsystemmajrelease: '14.04'
+      os: {
+        family: 'Debian',
+        name: 'Ubuntu',
+        release: { full: '14.04' }
+      }
     }
   end
 
