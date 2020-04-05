@@ -116,15 +116,15 @@ define ghost::blog(
   if $use_supervisord {
     require supervisord
 
-    case $::osfamily {
-      'redhat': {
+    case $facts['os']['family'] {
+      'RedHat': {
         $path_bin = '/usr/bin'
       }
-      'debian': {
+      'Debian': {
         $path_bin = '/usr/local/bin'
       }
       default: {
-        fail("ERROR - ${::osfamily} based systems are not supported!")
+        fail("ERROR - ${facts['os']['family']} based systems are not supported!")
       }
     }
 
