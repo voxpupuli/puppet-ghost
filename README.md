@@ -17,8 +17,9 @@ Donated by the excellent [@andschwa](https://twitter.com/andschwa)
 
 This module installs the Ghost Blogging Platform.
 
-It is in beta development and tested on Ubuntu 12.04 and 14.04,
-loosely tested on CentOS.
+It's tested and supported on CentOS/RHEL 6 and 7. Ubuntu 12/14 support got
+dropped because those versions are EOL. The module might still be compatible.
+Patches for Ubuntu 16/18/20 or other distributions are highly appreciated.
 
 ## Module Description
 
