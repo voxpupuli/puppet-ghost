@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v3.0.0](https://github.com/voxpupuli/puppet-ghost/tree/v3.0.0) (2020-05-09)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-ghost/compare/v2.1.1...v3.0.0)
+
+**Breaking changes:**
+
+- drop Ubuntu support [\#96](https://github.com/voxpupuli/puppet-ghost/pull/96) ([bastelfreak](https://github.com/bastelfreak))
+- modulesync 2.7.0 and drop puppet 4 [\#94](https://github.com/voxpupuli/puppet-ghost/pull/94) ([bastelfreak](https://github.com/bastelfreak))
+
+**Fixed bugs:**
+
+- Dependancy issue with NPM [\#17](https://github.com/voxpupuli/puppet-ghost/issues/17)
+
+**Merged pull requests:**
+
+- Use voxpupuli-acceptance [\#100](https://github.com/voxpupuli/puppet-ghost/pull/100) ([ekohl](https://github.com/ekohl))
+- Allow puppetlabs/stdlib 6.x [\#99](https://github.com/voxpupuli/puppet-ghost/pull/99) ([dhoppe](https://github.com/dhoppe))
+- Remove duplicate CONTRIBUTING.md file [\#97](https://github.com/voxpupuli/puppet-ghost/pull/97) ([dhoppe](https://github.com/dhoppe))
+
 ## [v2.1.1](https://github.com/voxpupuli/puppet-ghost/tree/v2.1.1) (2018-10-20)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-ghost/compare/v2.1.0...v2.1.1)
