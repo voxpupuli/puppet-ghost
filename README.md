@@ -39,10 +39,10 @@ class, adds the ghost user and group, and finally starts ghost.
 
 * Packages
   * `nodejs`
-	* `npm`
-	* `unzip`
-	* `curl`
-	* `supervisor`
+  * `npm`
+  * `unzip`
+  * `curl`
+  * `supervisor`
 * Services
     * `supervisor`
 * Files
