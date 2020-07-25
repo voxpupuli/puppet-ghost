@@ -5,7 +5,6 @@
 #
 # Copyright 2014 Andrew Schwartzmeyer
 class ghost::setup {
-
   assert_private()
 
   if $ghost::include_nodejs {

@@ -31,7 +31,7 @@
 # @param mail_options Hash for mail options
 #
 # Copyright 2014 Andrew Schwartzmeyer
-define ghost::blog(
+define ghost::blog (
   String $blog                                   = $title,
   String $user                                   = 'ghost',
   String $group                                  = 'ghost',
@@ -52,7 +52,6 @@ define ghost::blog(
   String $fromaddress                            = '',
   Hash $mail_options                             = {},
 ) {
-
   Exec {
     path    => '/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin',
     user    => $user,
