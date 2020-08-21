@@ -20,13 +20,12 @@
 #
 # Copyright 2014 Andrew Schwartzmeyer
 #
-class ghost(
+class ghost (
   String $user               = 'ghost',
   String $group              = 'ghost',
   Stdlib::Absolutepath $home = '/home/ghost',
   Boolean $include_nodejs    = false,
-  ) {
-
+) {
   contain ghost::setup
 
   Ghost::Blog <| |> {
