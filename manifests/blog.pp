@@ -48,8 +48,8 @@ define ghost::blog (
   String $host                                   = '127.0.0.1',
   Integer $port                                  = 2368,
   Variant[Boolean, Stdlib::Absolutepath] $socket = false,
-  String $transport                              = '',
-  String $fromaddress                            = '',
+  String $transport                              = '', # lint:ignore:params_empty_string_assignment
+  String $fromaddress                            = '', # lint:ignore:params_empty_string_assignment
   Hash $mail_options                             = {},
 ) {
   Exec {
