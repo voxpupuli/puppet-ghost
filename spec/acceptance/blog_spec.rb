@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 describe 'ghost class' do
@@ -36,7 +38,7 @@ describe 'ghost class' do
       end
 
       describe command('curl 0.0.0.0:2368/') do
-        its(:stdout) { is_expected.to match %r{Redirecting to https:\/\/my-ghost-blog.com\/} }
+        its(:stdout) { is_expected.to match %r{Redirecting to https://my-ghost-blog.com/} }
       end
     end
   end
