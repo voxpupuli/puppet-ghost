@@ -84,7 +84,7 @@ class profile::ghost {
 
   include nodejs
 
-  include ::ghost
+  include ghost
   create_resources('ghost::blog', hiera_hash('ghost::blogs', {}))
 }
 ```
